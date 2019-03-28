@@ -18,11 +18,21 @@ class MovieRow extends React.Component {
           <img src={placeholder} alt={this.props.movie.title} />
         )}
         <div className="main-block">
+          <span className="voteAvagerage">
+            <strong>{this.props.movie.vote_average} </strong> / 10
+          </span>
           <h2>{this.props.movie.title}</h2>
           <p className="overview">{this.props.movie.overview}</p>
+          <ul className="genres">
+            {this.props.movie.genres.map((genre, key) => (
+              <li genre={genre} key={key}>
+                {genre}
+              </li>
+            ))}
+          </ul>
           <input
             type="button"
-            value="View"
+            value="Read more on TheMovieDB"
             onClick={this.viewMovie.bind(this)}
           />
         </div>

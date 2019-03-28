@@ -43,10 +43,12 @@ class App extends Component {
 
   performSearch(searchTerm) {
     console.log('Perform search using movieDB');
-    const APIstring =
+    const movieSearchAPIstring =
       'https://api.themoviedb.org/3/search/movie?api_key=23c5356f958b1e94833e90b920184182&query=' +
       searchTerm;
-    axios.get(APIstring).then(res => {
+    const genreSearchAPIstring =
+      'https://api.themoviedb.org/3/genre/movie/list?api_key=23c5356f958b1e94833e90b920184182&language=en-US';
+    axios.get(movieSearchAPIstring).then(res => {
       const results = res.data.results;
       console.log(results);
       var movieRows = [];
@@ -55,12 +57,48 @@ class App extends Component {
         movie.backdrop =
           'https://image.tmdb.org/t/p/w1400_and_h450_face/' +
           movie.backdrop_path;
+        movie.genres = movie.genre_ids;
         const movieRow = (
-          <MovieRow movie={movie} key={movie.id} backdrop={movie.backdrop} />
+          <MovieRow
+            movie={movie}
+            key={movie.id}
+            backdrop={movie.backdrop}
+            genres={movie.genres}
+          />
         );
         movieRows.push(movieRow);
       });
       this.setState({ rows: movieRows });
+    });
+    axios.get(genreSearchAPIstring).then(res => {
+      const genreResults = res.data.results;
+      var genreNames = [];
+      genreResults.forEach(genre => {
+        const generatedGenre = (
+          <li id={genre.id} name={genre.name}>
+            {genre.name}
+          </li>
+        );
+        genreNames.push(generatedGenre);
+      });
+      this.setState({ genre: genreNames });
+      // var retrievedGenres = [];
+      // genreResults.forEach(genre => {
+      //   genre.poster = 'https://image.tmdb.org/t/p/w185/' + genre.poster_path;
+      //   genre.backdrop =
+      //     'https://image.tmdb.org/t/p/w1400_and_h450_face/' +
+      //     genre.backdrop_path;
+      //   genre.genres = genre.genre_ids;
+      //   const movieRow = (
+      //     <MovieRow
+      //       movie={movie}
+      //       key={movie.id}
+      //       backdrop={movie.backdrop}
+      //       genres={movie.genres}
+      //     />
+      //   );
+      //   movieRows.push(movieRow);
+      // });
     });
   }
 
@@ -88,6 +126,7 @@ class App extends Component {
             className="searchMovie"
             onChange={this.searchChangeHandler.bind(this)}
           />
+          <div className="filterBar">Filter Results: genre rating Year</div>
           {/* <MovieRow props={this.state.rows} /> */}
           <div className="cardContainer">{this.state.rows}</div>
         </section>

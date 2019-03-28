@@ -1,7 +1,9 @@
 {
-  "name": "movies",
+  "name": "movieSearch",
   "version": "0.1.0",
   "private": true,
+  "repository": "https://github.com/johanbijlsma/movieSearch",
+  "homepage": "https://www.johanbijlsma.nl/moviesearch",
   "dependencies": {
     "axios": "^0.18.0",
     "react": "^16.8.4",
