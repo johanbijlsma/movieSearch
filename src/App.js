@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 // import placeholder from './image-placeholder.svg';
-import './App.css';
+import './App.scss';
 import MovieRow from './components/MovieRow';
 import axios from 'axios';
+import InputRange from 'react-input-range';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { value: 2, filterPaneRatingOpen: false };
     // const movies = [
     //   {
     //     id: 0,
@@ -108,6 +109,18 @@ class App extends Component {
     const searchTerm = event.target.value;
     boundObject.performSearch(searchTerm);
   }
+  handleEvent(event) {
+    console.log('clicked!!!');
+    this.setState = {
+      filterPaneRatingOpen: true
+    };
+  }
+
+  toggleList() {
+    this.setState(prevState => ({
+      filterPaneRatingOpen: !prevState.filterPaneRatingOpen
+    }));
+  }
   render() {
     return (
       <div className="App">
@@ -126,7 +139,42 @@ class App extends Component {
             className="searchMovie"
             onChange={this.searchChangeHandler.bind(this)}
           />
-          <div className="filterBar">Filter Results: genre rating Year</div>
+          <div className="filterBar">
+            <h2> Filter Results: </h2>{' '}
+            <div className="filter-section">
+              <label htmlFor="genre">Genre</label>
+              <select name="genre" id="genre">
+                <option>Comedy</option>
+                <option>Action</option>
+                <option>Romance</option>
+                <option>Fantasy</option>
+              </select>
+            </div>
+            <div
+              className={
+                this.state.filterPaneRatingOpen
+                  ? 'filter-section open'
+                  : 'filter-section closed'
+              }
+            >
+              {/* <label htmlFor="rating" onClick={() => this.handleEvent()}> */}
+              <label htmlFor="rating" onClick={() => this.toggleList()}>
+                Rating
+              </label>
+              {this.state.filterPaneRatingOpen ? (
+                <InputRange
+                  formatLabel={value => `${value}`}
+                  maxValue={10}
+                  minValue={0}
+                  value={this.state.value}
+                  onChange={value => this.setState({ value })}
+                />
+              ) : (
+                <span />
+              )}
+            </div>
+            <div className="filter-section"> Year</div>
+          </div>
           {/* <MovieRow props={this.state.rows} /> */}
           <div className="cardContainer">{this.state.rows}</div>
         </section>
