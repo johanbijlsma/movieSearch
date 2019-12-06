@@ -1,78 +1,147 @@
+:root {
+	--color-gray: rgb(49, 49, 49);
+	--color-gray-50: rgba(49, 49, 49, 0.5);
+	--color-accent: rgb(32, 178, 171);
+	--color-accent-inverted: rgb(195, 109, 114);
+	--color-accent-90: rgba(32, 178, 171, 0.9);
+	--color-accent-60: rgba(32, 178, 171, 0.64);
+	--color-white: #fff;
+	--color-white-50: rgba(255, 255, 255, 0.5);
+}
+
+button:focus {
+	outline: none;
+}
+
 header {
-  background: rgb(49, 49, 49);
-  text-align: left;
-  margin: 0;
-  padding: 1rem;
-  box-shadow: 0 3px 8px rgba(49, 49, 49, 0.5);
+	background: var(--color-gray);
+	text-align: left;
+	margin: 0;
+	padding: 1rem;
+	box-shadow: 0 3px 8px rgba(49, 49, 49, 0.5);
 }
 
 header h1 {
-  color: #fff;
+	color: var(--color-white);
 }
 
 header h1 img {
-  margin: 10px 30px;
-  vertical-align: middle;
+	margin: 10px 30px;
+	vertical-align: middle;
 }
 
 section {
-  margin: 3rem auto;
-  text-align: center;
+	margin: 3rem auto;
+	text-align: center;
 }
 @media (min-width: 1050px) {
-  .cardContainer {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: space-between;
-  }
-  .cardContainer .movieCard {
-    max-width: calc(100% / 4);
-    flex-grow: 1;
-  }
+	.cardContainer {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		width: 100%;
+		justify-content: space-between;
+	}
+	.cardContainer .movieCard {
+		max-width: calc(100% / 4);
+		flex-grow: 1;
+	}
 }
 
 input.searchMovie {
-  flex-grow: 2;
-  font-size: 24px;
-  padding: 8px;
+	flex-grow: 2;
+	font-size: 24px;
+	padding: 8px;
+	font-size: large;
+	min-width: 300px;
 }
 
 div.movieCard {
-  display: grid;
-  grid-template-columns: 1fr 4fr;
-  gap: 1rem;
-  margin: 1rem;
-  box-shadow: 0 3px 8px rgba(49, 49, 49, 0.5);
-  text-align: left;
-  padding: 16px;
-  background-size: cover;
-  position: relative;
+	display: grid;
+	grid-template-columns: 1fr 4fr;
+	gap: 1rem;
+	margin: 1rem;
+	box-shadow: 0 3px 8px var(--color-gray-50);
+	text-align: left;
+	padding: 16px;
+	background-size: cover;
+	position: relative;
 }
 div.movieCard:after {
-  content: '';
-  background: rgba(32, 178, 171, 0.644);
-  width: 100%;
-  height: 100%;
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
+	content: '';
+	background: var(--color-accent-60);
+	width: 100%;
+	height: 100%;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
 }
 
 div.movieCard img {
-  max-width: 200px;
-  z-index: 10;
-  position: relative;
+	max-width: 200px;
+	z-index: 10;
+	position: relative;
 }
 
 div.movieCard .main-block {
-  z-index: 10;
-  position: relative;
-  color: #fff;
-  text-shadow: 1px 1px 1px #000000;
+	z-index: 10;
+	position: relative;
+	color: var(--color-white);
+	text-shadow: 1px 1px 1px #000000;
+}
+
+.vote {
+	font-weight: 700;
+	font-size: 2rem;
+	line-height: 0;
+}
+.vote .bad {
+	color: tomato;
+}
+
+.vote .good {
+	color: green;
+}
+
+.vote .small {
+	font-size: 40%;
+	color: var(--color-white-50);
+	text-shadow: none;
+}
+
+div.movieCard button.btn {
+	width: 80%;
+	margin: 10px auto;
+	background-color: var(--color-accent-90);
+	color: var(--color-white);
+	padding: 0.6rem;
+	display: block;
+	border-radius: 8px;
+	border: 3px solid var(--color-gray-50);
+	transition: all 200ms ease-in;
+}
+
+div.movieCard button.btn:after {
+	content: '';
+	background-image: url(./tmdb.svg);
+	background-size: contain;
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+	margin: -15px 3px 0;
+	transform: translate(0px, 8px);
+}
+
+div.movieCard button.btn:hover,
+div.movieCard button.btn:focus {
+	background-color: var(--color-accent-inverted);
+	font-weight: 800;
+	transition: all 200ms ease-in;
+	cursor: pointer;
+	padding: 0.85rem;
+	font-size: 120%;
 }
