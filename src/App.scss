@@ -1,0 +1,227 @@
+:root {
+	--color-gray: rgb(49, 49, 49);
+	--color-gray-50: rgba(49, 49, 49, 0.5);
+	--color-accent: rgb(32, 178, 171);
+	--color-accent-inverted: rgb(195, 109, 114);
+	--color-accent-inverted-60: rgba(195, 109, 114, 0.6);
+	--color-accent-90: rgba(32, 178, 171, 0.9);
+	--color-accent-60: rgba(32, 178, 171, 0.64);
+	--color-white: #fff;
+	--color-white-50: rgba(255, 255, 255, 0.5);
+}
+
+button:focus {
+	outline: none;
+}
+
+header {
+	background: var(--color-gray);
+	text-align: left;
+	margin: 0;
+	padding: 1rem;
+	box-shadow: 0 3px 8px rgba(49, 49, 49, 0.5);
+	h1 {
+		color: var(--color-white);
+		img {
+			margin: 10px 30px;
+			vertical-align: middle;
+		}
+	}
+}
+
+section {
+	margin: 3rem auto;
+	text-align: center;
+	p.alert {
+		background: var(--color-accent-inverted);
+		padding: 8px 20px;
+		color: var(--color-white);
+		text-shadow: 1px 1px 1px tomato;
+		font-weight: 700;
+	}
+}
+
+@media (min-width: 1300px) {
+	.cardContainer {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		width: 100%;
+		justify-content: space-between;
+	}
+	.cardContainer .movieCard {
+		max-width: 45%;
+		flex-grow: 1;
+	}
+}
+@media (min-width: 1400px) {
+	.cardContainer .movieCard {
+		max-width: calc(100% / 4);
+	}
+}
+
+input.searchMovie {
+	flex-grow: 2;
+	font-size: 24px;
+	padding: 8px;
+	font-size: large;
+	min-width: 300px;
+}
+
+div.movieCard {
+	display: grid;
+	grid-template-columns: 1fr 4fr;
+	gap: 1rem;
+	margin: 1rem;
+	box-shadow: 0 3px 8px var(--color-gray-50);
+	text-align: left;
+	padding: 16px;
+	background-size: cover;
+	position: relative;
+	&:nth-child(odd):after {
+		background-color: var(--color-accent-60);
+		content: '';
+		width: 100%;
+		height: 100%;
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1;
+	}
+	&:nth-child(even):after {
+		background-color: var(--color-accent-inverted-60);
+		content: '';
+		width: 100%;
+		height: 100%;
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1;
+	}
+	img {
+		max-width: 200px;
+		z-index: 10;
+		position: relative;
+	}
+	.main-block {
+		z-index: 10;
+		position: relative;
+		color: var(--color-white);
+		text-shadow: 1px 1px 1px #000000;
+	}
+
+	.vote {
+		font-weight: 700;
+		font-size: 2rem;
+		line-height: 0;
+	}
+	.vote .bad {
+		color: tomato;
+	}
+
+	.vote .good {
+		color: green;
+	}
+
+	.small {
+		font-size: 40%;
+		color: var(--color-white-50);
+		text-shadow: none;
+	}
+
+	button.btn {
+		width: 80%;
+		margin: 10px auto;
+		background-color: var(--color-accent-90);
+		color: var(--color-white);
+		padding: 0.6rem;
+		display: block;
+		border-radius: 8px;
+		border: 3px solid var(--color-gray-50);
+		transition: all 200ms ease-in;
+		&:after {
+			content: '';
+			background-image: url(./tmdb.svg);
+			background-size: contain;
+			width: 30px;
+			height: 30px;
+			display: inline-block;
+			margin: -15px 3px 0;
+			transform: translate(0px, 8px);
+		}
+		&:hover,
+		&:focus {
+			background-color: var(--color-accent-inverted);
+			font-weight: 800;
+			transition: all 200ms ease-in;
+			cursor: pointer;
+			padding: 0.85rem;
+			font-size: 120%;
+		}
+	}
+}
+
+.search-suggestions {
+	display: inline-block;
+	border: 1px dashed var(--color-gray);
+	padding: 4px;
+	margin: 0 8px;
+	&:hover {
+		background-color: var(--color-accent);
+		color: var(--color-white);
+		cursor: pointer;
+	}
+}
+
+.loadingContainer {
+	&:after {
+		content: 'loading...';
+		display: block;
+		transform: translate(0px, -96px) rotate(-15deg);
+		color: var(--color-white);
+		animation: loading-text infinite 800ms alternate;
+		text-shadow: 0 0 3px rgba(black, 0.4);
+	}
+	img.loader {
+		animation: loading infinite 800ms alternate;
+		max-width: 200px;
+	}
+}
+
+@keyframes loading {
+	0% {
+		opacity: 0.3;
+		transform: scale(1);
+		filter: hue-rotate(0);
+	}
+	20% {
+		opacity: 0.6;
+		transform: scale(0.7);
+		filter: hue-rotate(128deg);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1.1);
+		filter: hue-rotate(256deg);
+	}
+}
+@keyframes loading-text {
+	0% {
+		opacity: 0.3;
+		// transform: scale(1);
+	}
+	20% {
+		opacity: 0.6;
+		// transform: scale(0.7);
+	}
+	100% {
+		opacity: 1;
+		// transform: scale(1.1);
+	}
+}
