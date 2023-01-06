@@ -7,6 +7,16 @@ const suggestions = [
   "Spongebob Squarepants",
   "The Godfather",
 ];
+
+function randomlySuggest() {
+  let items = suggestions.length || 0;
+  let min = Math.floor(0);
+  let max = Math.floor(items);
+  console.log(randomlySuggest);
+  return Math.random() * (max - min) + min;
+}
+
+randomlySuggest();
 </script>
 
 <template>
@@ -25,7 +35,7 @@ const suggestions = [
     <div class="suggestions">
       How about:
       <template v-for="(idea, index) in suggestions" :key="index">
-        <span>{{ idea }}</span>
+        <span :class="`idea-${index}`">{{ idea }}</span>
       </template>
     </div>
   </section>
