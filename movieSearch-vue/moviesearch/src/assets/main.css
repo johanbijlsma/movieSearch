@@ -1,4 +1,11 @@
-@import './base.css';
+@import "./base.css";
+
+:root {
+  --primary: hsla(160, 100%, 37%, 1);
+  --primary-20: hsla(160, 100%, 37%, 0.2);
+  --secondary: hsl(261, 88%, 48%, 1);
+  --secondary-20: hsl(261, 88%, 48%, 0.2);
+}
 
 #app {
   max-width: 1280px;
@@ -11,8 +18,22 @@
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: var(--primary);
   transition: 0.4s;
+}
+
+header {
+  display: block !important;
+  width: 100%;
+  border-bottom: 1px dashed;
+  margin-bottom: 3px;
+}
+p.subheading {
+  display: block;
+  text-transform: uppercase;
+  opacity: 0.75;
+  color: var(--primary);
+  transform: translate(0, -10px);
 }
 
 @media (hover: hover) {
@@ -24,12 +45,12 @@ a,
 @media (min-width: 1024px) {
   body {
     display: flex;
-    place-items: center;
+    /* place-items: center; */
   }
 
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    /* display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0 2rem; */
   }
 }
