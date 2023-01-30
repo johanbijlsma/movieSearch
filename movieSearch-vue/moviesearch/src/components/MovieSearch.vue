@@ -1,5 +1,7 @@
 <script setup lang="ts">
-let placeholder = "Type here to start searching...";
+import { ref } from "vue";
+
+let placeholder = ref("Type here to start searching...");
 const suggestions = [
   "Star Wars",
   "Spiderman",
@@ -7,15 +9,13 @@ const suggestions = [
   "Spongebob Squarepants",
   "The Godfather",
   "The Shawshank Redemption",
-  " The Matrix ",
+  "The Matrix",
   "the Lego Movie",
 ];
 let randomChosen: number;
-let searchBar = "";
-let query = {
-  loading: false,
-  searchterm: "",
-};
+let searchBar = ref("");
+let queryLoading = ref(false);
+let querySearchterm = ref("");
 
 function randomlySuggest() {
   let items = suggestions.length || 0;
@@ -26,20 +26,20 @@ function randomlySuggest() {
 }
 
 function addSuggestion() {
-  searchBar = suggestions[`${randomChosen}`];
-  query.searchterm = searchBar;
+  searchBar.value = suggestions[`${randomChosen}`];
+  querySearchterm.value = searchBar.value;
   console.log({ placeholder, searchBar });
   randomlySuggest();
 }
 
 function search() {
-  if (searchBar !== "") {
-    query.searchterm = searchBar;
-    query.loading = true;
-    console.log(query);
+  if (searchBar.value !== "") {
+    querySearchterm.value = searchBar.value;
+    queryLoading.value = true;
+    // console.log();
   } else {
-    query.loading = false;
-    console.log(query);
+    querySearchterm.value = "";
+    queryLoading.value = false;
     return;
   }
 }
@@ -47,6 +47,19 @@ function search() {
 function updateSearch() {
   console.log("updateSearch ran");
   console.log({ searchBar });
+
+  if (searchBar.value === "") {
+    querySearchterm.value = "";
+    queryLoading.value = false;
+  }
+}
+function reset() {
+  console.log("reset ran");
+  console.log({ searchBar });
+  searchBar.value = "";
+  querySearchterm.value = "";
+  queryLoading.value = false;
+  console.log({ querySearchterm, queryLoading });
 }
 
 randomlySuggest();
@@ -70,15 +83,26 @@ randomlySuggest();
       />
       <button type="button" :onClick="search">Search</button>
     </div>
-    <div class="suggestions">
+    <div v-if="queryLoading" class="suggestions">
       How about:
       <!-- <template v-for="(idea, index) in suggestions" :key="index">
-        <span :class="`idea-${index}`">{{ idea }}</span>
-      </template> -->
+            <span :class="`idea-${index}`">{{ idea }}</span>
+        </template> -->
       <span class="suggestion" :onClick="addSuggestion"
         >"{{ suggestions[`${randomChosen}`] }}"</span
       >
     </div>
+    <div v-if="(queryLoading = true)" class="loading">
+      Loading... <button :onClick="reset">reset</button>
+    </div>
+    <details>
+      <summary>randomChosen</summary>
+      {{ randomChosen }}
+    </details>
+    <details>
+      <summary>queryLoading</summary>
+      {{ queryLoading }}
+    </details>
   </section>
 </template>
 
@@ -165,5 +189,16 @@ p.intro {
   text-align: center;
   margin-top: 1.2rem;
   text-shadow: 0 0 white;
+}
+
+span.suggestion:hover,
+span.suggestion:focus {
+  display: inline-block;
+  border: 1px dashed var(--primary);
+  transform: rotate(3deg) translate(3px, 10px) scale(1.1);
+  background-color: var(--primary);
+  color: var(--secondary);
+  cursor: pointer;
+  transition: all 200ms ease-in;
 }
 </style>
