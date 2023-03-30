@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
-
+import { reactive, ref } from "vue";
+import axios from "axios";
+// import MovierowCard from "./Movierow-card.vue";
 let placeholder = ref("Type here to start searching...");
 const suggestions = [
   "Star Wars",
@@ -15,7 +16,18 @@ const suggestions = [
 let randomChosen: number;
 let searchBar = ref("");
 let queryLoading = ref(false);
+let loadingState = reactive([
+  "loading",
+  "loaded",
+  "fetching",
+  "fetched",
+  "failed",
+]);
+let UIstate = ref("");
 let querySearchterm = ref("");
+let results = reactive([]);
+const APIstringMovie =
+  "https://api.themoviedb.org/3/search/movie?api_key=23c5356f958b1e94833e90b920184182&query=";
 
 function randomlySuggest() {
   let items = suggestions.length || 0;
@@ -23,6 +35,7 @@ function randomlySuggest() {
   let max = Math.floor(items);
   let chosenItem = Math.floor(Math.random() * (max - min) + min);
   randomChosen = chosenItem;
+  UIstate = ref(loadingState[1]);
 }
 
 function addSuggestion() {
@@ -32,14 +45,63 @@ function addSuggestion() {
   randomlySuggest();
 }
 
-function search() {
+function search(this: any) {
   if (searchBar.value !== "") {
     querySearchterm.value = searchBar.value;
     queryLoading.value = true;
-    // console.log();
+    UIstate.value = loadingState[2];
+    axios
+      .get(APIstringMovie + querySearchterm.value)
+      .then((res) => {
+        results = res.data.results;
+        console.table(results);
+        UIstate.value = loadingState[3];
+
+        // create a new card
+        // let newCard = new MovierowCard({
+        //   props: {
+        //     results: results.value,
+        //     querySearchterm: querySearchterm.value,
+        //   },
+        // });
+        // {
+        //   {
+        //     newCard;
+        //   }
+        // }
+
+        // <newCard>{{results}}</newCard>}};
+        // var movieRows = [];
+        // results.forEach(
+        //   (movie: {
+        //     poster: string;
+        //     poster_path: string;
+        //     backdrop: string;
+        //     backdrop_path: string;
+        //   }) => {
+        //     movie.poster =
+        //       "https://image.tmdb.org/t/p/w185/" + movie.poster_path;
+        //     movie.backdrop =
+        //       "https://image.tmdb.org/t/p/w1400_and_h450_face/" +
+        //       movie.backdrop_path;
+        //     const movieRow = (
+        //       <MovieRowCard
+        //         movie,
+        //         key={movie.id},
+        //         backdrop={movie.backdrop}
+        //       />
+        //     );
+        //     movieRows.push(movieRow);
+        //   }
+        // );
+        // this.setState({ rows: movieRows, isLoading: false });
+      })
+      .catch((error: any) => ({ error, isLoading: false })); // console.log();
   } else {
     querySearchterm.value = "";
     queryLoading.value = false;
+    UIstate.value = loadingState[4];
+
     return;
   }
 }
@@ -51,6 +113,7 @@ function updateSearch() {
   if (searchBar.value === "") {
     querySearchterm.value = "";
     queryLoading.value = false;
+    UIstate.value = loadingState[1];
   }
 }
 function reset() {
@@ -59,7 +122,9 @@ function reset() {
   searchBar.value = "";
   querySearchterm.value = "";
   queryLoading.value = false;
-  console.log({ querySearchterm, queryLoading });
+  UIstate.value = loadingState[1];
+
+  console.log({ querySearchterm, queryLoading, UIstate });
 }
 
 randomlySuggest();
@@ -83,7 +148,8 @@ randomlySuggest();
       />
       <button type="button" :onClick="search">Search</button>
     </div>
-    <div v-if="queryLoading" class="suggestions">
+
+    <div v-if="UIstate == 'loaded'" class="suggestions">
       How about:
       <!-- <template v-for="(idea, index) in suggestions" :key="index">
             <span :class="`idea-${index}`">{{ idea }}</span>
@@ -92,9 +158,52 @@ randomlySuggest();
         >"{{ suggestions[`${randomChosen}`] }}"</span
       >
     </div>
-    <div v-if="(queryLoading = true)" class="loading">
-      Loading... <button :onClick="reset">reset</button>
+    <div v-if="UIstate == 'fetching' && results.length == 0" class="loading">
+      Loading...
     </div>
+    <div
+      v-if="UIstate == 'fetched' && results.length > 0"
+      class="content-wrapper"
+    >
+      <div class="card-iterator">
+        <div
+          class="card"
+          v-for="{
+            index,
+            title,
+            backdrop_path,
+            overview,
+            poster_path,
+          } in results"
+          :key="index"
+        >
+          <h3 class="card-title">{{ title }}</h3>
+          <img
+            v-if="backdrop_path != null"
+            :src="`https://image.tmdb.org/t/p/w1400_and_h450_face${backdrop_path}`"
+            :alt="title"
+            class="card-backdrop"
+          />
+          <p>
+            <img
+              v-if="poster_path != null"
+              :src="`https://image.tmdb.org/t/p/w185/${poster_path}`"
+              :alt="title"
+              class="card-poster"
+            />
+            {{ overview }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="dump">
+    <div v-if="UIstate == 'loading'">⌛️ loading</div>
+    <div v-if="UIstate == 'loaded'">✅ loaded</div>
+    <div v-if="UIstate == 'fetching'">🚀 fetching</div>
+    <div v-if="UIstate == 'fetched'">🏁 fetched</div>
+    <div v-if="UIstate == 'failed'">❌ failed</div>
+    <button :onClick="reset">reset</button>
     <details>
       <summary>randomChosen</summary>
       {{ randomChosen }}
@@ -103,7 +212,15 @@ randomlySuggest();
       <summary>queryLoading</summary>
       {{ queryLoading }}
     </details>
-  </section>
+    <details>
+      <summary>querySearchterm</summary>
+      {{ querySearchterm }}
+    </details>
+    <details>
+      <summary>Results</summary>
+      {{ results }}
+    </details>
+  </div>
 </template>
 
 <style scoped>
@@ -119,8 +236,8 @@ section {
     var(--secondary-20)
   );
   min-height: 80vh;
-  min-width: 80vw;
-  transition: box-shadow 200ms ease-in-out;
+  min-width: auto;
+  transition: all 200ms ease-in-out;
 }
 
 section > input:focus {
@@ -200,5 +317,65 @@ span.suggestion:focus {
   color: var(--secondary);
   cursor: pointer;
   transition: all 200ms ease-in;
+}
+
+.content-wrapper {
+  /* width: 100%; */
+  overflow: hidden;
+  grid-area: result;
+  margin-bottom: 2rem;
+}
+
+.card-iterator {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  flex-direction: row;
+}
+
+.card {
+  width: 45%;
+
+  padding: 2rem;
+  border: 1px solid var(--primary);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--secondary);
+}
+
+.card-title {
+  position: relative;
+  z-index: 10;
+  color: var(--primary);
+  font-size: clamp(1rem, 2.5vw, 2rem);
+}
+.card img.card-backdrop {
+  position: absolute;
+  top: 0;
+  left: -50%;
+  object-fit: cover;
+  -webkit-filter: contrast(0.4) brightness(0.4);
+  transition: all 100ms ease-in-out;
+}
+.card:hover img.card-backdrop {
+  -webkit-filter: contrast(0.4) brightness(0.5) opacity(0.7);
+  transform: scale(1.4);
+  transition: all 200ms ease-in-out;
+}
+
+.card img.card-poster {
+  float: right;
+  border: 3px solid #fff;
+  box-shadow: 0 0 5px #000;
+  /* margin: -2px 10px 10px 10px; */
+  transform: scale(0.75);
+  transform-origin: 120% 0%;
+}
+/* styling for the debug pannel */
+
+.dump {
+  position: sticky;
+  left: 0;
 }
 </style>
