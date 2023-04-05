@@ -114,6 +114,8 @@ function updateSearch() {
     querySearchterm.value = "";
     queryLoading.value = false;
     UIstate.value = loadingState[1];
+  } else {
+    search();
   }
 }
 function reset() {
@@ -145,7 +147,16 @@ randomlySuggest();
         className="searchMovie"
         v-model="searchBar"
         :onBlur="updateSearch"
+        @keyup.enter="updateSearch"
       />
+
+      <button
+        type="button"
+        :onClick="search"
+        v-if="UIstate == 'fetched' && results.length > 0"
+      >
+        Start over
+      </button>
       <button type="button" :onClick="search">Search</button>
     </div>
 
@@ -174,10 +185,24 @@ randomlySuggest();
             backdrop_path,
             overview,
             poster_path,
+            vote_average,
+            vote_count,
+            release_date,
           } in results"
           :key="index"
         >
-          <h3 class="card-title">{{ title }}</h3>
+          <div class="title-container">
+            <h3 class="card-title">
+              {{ title }}
+              <span class="release">({{ release_date.slice(0, 4) }})</span>
+            </h3>
+            <div class="rating-container" v-if="vote_average != 0">
+              <span class="rating"
+                >{{ Math.round(vote_average * 10) / 10 }}
+              </span>
+              <span class="votes">/{{ vote_count }}</span>
+            </div>
+          </div>
           <img
             v-if="backdrop_path != null"
             :src="`https://image.tmdb.org/t/p/w1400_and_h450_face${backdrop_path}`"
@@ -350,6 +375,32 @@ span.suggestion:focus {
   color: var(--primary);
   font-size: clamp(1rem, 2.5vw, 2rem);
 }
+
+.card-title .release {
+  font-size: 60%;
+  color: var(--color-text);
+}
+
+.title-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rating-container {
+  font-size: 2rem;
+  color: var(--white);
+  position: relative;
+  z-index: 10;
+}
+.rating-container span.rating {
+  font-weight: bold;
+}
+.rating-container span.votes {
+  font-style: italic;
+  font-size: 60%;
+  color: var(--color-text);
+}
+
 .card img.card-backdrop {
   position: absolute;
   top: 0;
