@@ -66,7 +66,7 @@ function search(this: any) {
   }
 }
 
-function getYear(a) {
+function getYear(a: string | any[]) {
   return a.slice(0, 4);
 }
 
