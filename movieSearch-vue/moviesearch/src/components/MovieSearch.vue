@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import axios from "axios";
-// import MovierowCard from "./Movierow-card.vue";
 let placeholder = ref("Type here to start searching...");
 const suggestions = [
   "Star Wars",
@@ -56,47 +55,8 @@ function search(this: any) {
         results = res.data.results;
         console.table(results);
         UIstate.value = loadingState[3];
-
-        // create a new card
-        // let newCard = new MovierowCard({
-        //   props: {
-        //     results: results.value,
-        //     querySearchterm: querySearchterm.value,
-        //   },
-        // });
-        // {
-        //   {
-        //     newCard;
-        //   }
-        // }
-
-        // <newCard>{{results}}</newCard>}};
-        // var movieRows = [];
-        // results.forEach(
-        //   (movie: {
-        //     poster: string;
-        //     poster_path: string;
-        //     backdrop: string;
-        //     backdrop_path: string;
-        //   }) => {
-        //     movie.poster =
-        //       "https://image.tmdb.org/t/p/w185/" + movie.poster_path;
-        //     movie.backdrop =
-        //       "https://image.tmdb.org/t/p/w1400_and_h450_face/" +
-        //       movie.backdrop_path;
-        //     const movieRow = (
-        //       <MovieRowCard
-        //         movie,
-        //         key={movie.id},
-        //         backdrop={movie.backdrop}
-        //       />
-        //     );
-        //     movieRows.push(movieRow);
-        //   }
-        // );
-        // this.setState({ rows: movieRows, isLoading: false });
       })
-      .catch((error: any) => ({ error, isLoading: false })); // console.log();
+      .catch((error: any) => ({ error, isLoading: false }));
   } else {
     querySearchterm.value = "";
     queryLoading.value = false;
@@ -104,6 +64,10 @@ function search(this: any) {
 
     return;
   }
+}
+
+function getYear(a) {
+  return a.slice(0, 4);
 }
 
 function updateSearch() {
@@ -125,7 +89,7 @@ function reset() {
   querySearchterm.value = "";
   queryLoading.value = false;
   UIstate.value = loadingState[1];
-
+  results = [];
   console.log({ querySearchterm, queryLoading, UIstate });
 }
 
@@ -152,7 +116,7 @@ randomlySuggest();
 
       <button
         type="button"
-        :onClick="search"
+        :onClick="reset"
         v-if="UIstate == 'fetched' && results.length > 0"
       >
         Start over
@@ -194,7 +158,7 @@ randomlySuggest();
           <div class="title-container">
             <h3 class="card-title">
               {{ title }}
-              <span class="release">({{ release_date.slice(0, 4) }})</span>
+              <span class="release">({{ getYear(release_date) }})</span>
             </h3>
             <div class="rating-container" v-if="vote_average != 0">
               <span class="rating"
