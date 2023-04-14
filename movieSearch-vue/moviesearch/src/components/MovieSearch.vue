@@ -113,15 +113,15 @@ randomlySuggest();
         :onBlur="updateSearch"
         @keyup.enter="updateSearch"
       />
+      <button type="button" :onClick="search">Search</button>
 
       <button
-        type="button"
+        type="reset"
         :onClick="reset"
         v-if="UIstate == 'fetched' && results.length > 0"
       >
         Start over
       </button>
-      <button type="button" :onClick="search">Search</button>
     </div>
 
     <div v-if="UIstate == 'loaded'" class="suggestions">
@@ -158,7 +158,9 @@ randomlySuggest();
           <div class="title-container">
             <h3 class="card-title">
               {{ title }}
-              <span class="release">({{ getYear(release_date) }})</span>
+              <span class="release" v-if="release_date != ''"
+                >({{ getYear(release_date) }})</span
+              >
             </h3>
             <div class="rating-container" v-if="vote_average != 0">
               <span class="rating"
@@ -181,6 +183,11 @@ randomlySuggest();
               class="card-poster"
             />
             {{ overview }}
+            <!-- <video
+              src="https://www.themoviedb.org/video/play?key=3j7rDLpLTkM"
+              controls
+              autoplay
+            /> -->
           </p>
         </div>
       </div>
@@ -372,10 +379,11 @@ span.suggestion:focus {
   object-fit: cover;
   -webkit-filter: contrast(0.4) brightness(0.4);
   transition: all 100ms ease-in-out;
+  transform: scale(1.5);
 }
 .card:hover img.card-backdrop {
   -webkit-filter: contrast(0.4) brightness(0.5) opacity(0.7);
-  transform: scale(1.4);
+  transform: scale(1.65);
   transition: all 200ms ease-in-out;
 }
 
