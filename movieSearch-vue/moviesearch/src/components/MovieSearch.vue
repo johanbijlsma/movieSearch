@@ -92,6 +92,9 @@ function reset() {
   results = [];
   console.log({ querySearchterm, queryLoading, UIstate });
 }
+function triggerFetching() {
+  UIstate.value = loadingState[2];
+}
 
 randomlySuggest();
 </script>
@@ -113,7 +116,9 @@ randomlySuggest();
         :onBlur="updateSearch"
         @keyup.enter="updateSearch"
       />
-      <button type="button" :onClick="search">Search</button>
+      <button type="button" :onClick="search" :disabled="!querySearchterm">
+        Search
+      </button>
 
       <button
         type="reset"
@@ -134,7 +139,10 @@ randomlySuggest();
       >
     </div>
     <div v-if="UIstate == 'fetching' && results.length == 0" class="loading">
-      Loading...
+      <div class="lds-ripple">
+        <div></div>
+        <div></div>
+      </div>
     </div>
     <div
       v-if="UIstate == 'fetched' && results.length > 0"
@@ -175,6 +183,12 @@ randomlySuggest();
             :alt="title"
             class="card-backdrop"
           />
+          <img
+            v-if="backdrop_path == null"
+            src="./../assets/fallback-background.jpg"
+            alt=""
+            class="card-backdrop fallback"
+          />
           <p>
             <img
               v-if="poster_path != null"
@@ -199,6 +213,7 @@ randomlySuggest();
     <div v-if="UIstate == 'fetching'">🚀 fetching</div>
     <div v-if="UIstate == 'fetched'">🏁 fetched</div>
     <div v-if="UIstate == 'failed'">❌ failed</div>
+    <button :onClick="triggerFetching">trigger fetching</button>
     <button :onClick="reset">reset</button>
     <details>
       <summary>randomChosen</summary>
@@ -223,17 +238,28 @@ randomlySuggest();
 section {
   display: grid;
   grid-template-areas: "intro intro intro" "search search search" "sugestions sugestions sugestions" "result result result";
-  grid-template-rows: auto 100px 100px 1fr;
-  background: linear-gradient(
+  @media max-width(768px) {
+    grid-template-areas: "intro" "search" "sugestions" "result";
+    /* grid-template-columns: 1fr; */
+  }
+  grid-template-rows: 100px 100px 1fr;
+  /* background: linear-gradient(
     45deg,
     var(--primary-20),
     var(--primary) 15%,
     var(--secondary),
     var(--secondary-20)
+  ); */
+  background: radial-gradient(
+    ellipse at top left,
+    var(--primary),
+    var(--secondary-20),
+    transparent
   );
   min-height: 80vh;
   min-width: auto;
-  transition: all 200ms ease-in-out;
+  transition: background 200ms ease-in-out;
+  padding: 0.25rem;
 }
 
 section > input:focus {
@@ -261,7 +287,7 @@ input[type="search"]:focus-visible {
   box-shadow: 0px 0px 11px 8px var(--primary), 0px 0px 11px 8px var(--primary),
     0px 0px 11px 8px var(--primary);
   transition: all 200ms ease-in-out;
-  margin: 1.4rem 5vw;
+  margin: 1.4rem 2.5vw;
 }
 
 .searchbar button {
@@ -271,8 +297,6 @@ input[type="search"]:focus-visible {
   padding: 0.2rem 1rem;
   border-radius: 10px;
   max-height: 2.4rem;
-  /* box-shadow: 0px 0px 1px 3px var(--primary-20), */
-  /* 0px 0px 1px 3px var(--primary-20), 0px 0px 1px 3px var(--primary-20); */
   transition: box-shadow 200ms ease-in-out;
   flex-grow: 0;
   background-color: var(--primary);
@@ -284,6 +308,13 @@ input[type="search"]:focus-visible {
   transition: all 200ms ease-in-out;
   background-color: var(--secondary);
   cursor: pointer;
+}
+
+.searchbar button:disabled {
+  background-color: var(--alert);
+}
+.searchbar button:disabled:hover {
+  cursor: not-allowed;
 }
 
 p.intro {
@@ -328,11 +359,18 @@ span.suggestion:focus {
   justify-content: center;
   gap: 1rem;
   flex-direction: row;
+  @media max-width(768px) {
+    color: hotpink !important;
+    flex-wrap: nowrap;
+    flex-direction: column;
+  }
 }
 
 .card {
   width: 45%;
-
+  @media max-width(768px) {
+    width: 100%;
+  }
   padding: 2rem;
   border: 1px solid var(--primary);
   overflow: hidden;
@@ -345,6 +383,8 @@ span.suggestion:focus {
   z-index: 10;
   color: var(--primary);
   font-size: clamp(1rem, 2.5vw, 2rem);
+  line-height: 1.1;
+  font-weight: 500;
 }
 
 .card-title .release {
@@ -400,5 +440,56 @@ span.suggestion:focus {
 .dump {
   position: sticky;
   left: 0;
+}
+
+.loading {
+  grid-area: sugestions;
+  text-align: center;
+}
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid #fff;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  4.9% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  5% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
 }
 </style>

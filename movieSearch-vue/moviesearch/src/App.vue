@@ -8,7 +8,7 @@ import MovieSearchVue from "./components/MovieSearch.vue";
     <p class="subheading">Powered by the The MovieDB</p>
   </header>
   <main>
-    <div class="wrapper"></div>
+    <!-- <div class="wrapper"></div> -->
 
     <MovieSearchVue />
   </main>

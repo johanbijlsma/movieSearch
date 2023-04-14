@@ -6,6 +6,7 @@
     --secondary: hsl(261, 88%, 48%, 1);
     --secondary-20: hsl(261, 88%, 48%, 0.2);
     --white: hsl(0, 0%, 100%);
+    --alert: hsla(0, 100%, 37%, 0.5);
 }
 
 #app {
@@ -13,7 +14,9 @@
     margin: 0 auto;
     padding: 2rem;
 
-    font-weight: normal;
+    font-family: 'Fredoka',
+        sans-serif;
+    font-weight: 300;
 }
 
 a,
