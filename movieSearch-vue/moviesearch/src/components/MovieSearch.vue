@@ -238,9 +238,9 @@ randomlySuggest();
 section {
   display: grid;
   grid-template-areas: "intro intro intro" "search search search" "sugestions sugestions sugestions" "result result result";
+  grid-template-columns: 1fr;
   @media max-width(768px) {
     grid-template-areas: "intro" "search" "sugestions" "result";
-    /* grid-template-columns: 1fr; */
   }
   grid-template-rows: 100px 100px 1fr;
   /* background: linear-gradient(
@@ -257,7 +257,7 @@ section {
     transparent
   );
   min-height: 80vh;
-  min-width: auto;
+  /* min-width: auto; */
   transition: background 200ms ease-in-out;
   padding: 0.25rem;
 }
@@ -359,18 +359,10 @@ span.suggestion:focus {
   justify-content: center;
   gap: 1rem;
   flex-direction: row;
-  @media max-width(768px) {
-    color: hotpink !important;
-    flex-wrap: nowrap;
-    flex-direction: column;
-  }
 }
 
 .card {
   width: 45%;
-  @media max-width(768px) {
-    width: 100%;
-  }
   padding: 2rem;
   border: 1px solid var(--primary);
   overflow: hidden;
@@ -490,6 +482,20 @@ span.suggestion:focus {
     width: 72px;
     height: 72px;
     opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  section {
+    outline: 1px solid blue;
+  }
+  * {
+    outline: 1px solid red;
   }
 }
 </style>
