@@ -8,8 +8,6 @@ import MovieSearchVue from "./components/MovieSearch.vue";
     <p class="subheading">Powered by the The MovieDB</p>
   </header>
   <main>
-    <!-- <div class="wrapper"></div> -->
-
     <MovieSearchVue />
   </main>
 </template>
@@ -28,12 +26,6 @@ header {
   header {
     display: flex;
     min-height: 80px;
-    /* place-items: center;
-    padding-right: calc(var(--section-gap) / 2); */
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
   }
   .wrapper {
     display: flex;

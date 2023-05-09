@@ -31,6 +31,7 @@ header {
     width: 100%;
     border-bottom: 1px dashed;
     margin-bottom: 3px;
+    color: var(--text-color)
 }
 
 p.subheading {

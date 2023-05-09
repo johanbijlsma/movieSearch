@@ -33,6 +33,10 @@ function randomlySuggest() {
   let min = Math.floor(0);
   let max = Math.floor(items);
   let chosenItem = Math.floor(Math.random() * (max - min) + min);
+  if (chosenItem === randomChosen) {
+    console.log("randomly chose the same number");
+    chosenItem = Math.floor(Math.random() * (max - min) + min);
+  }
   randomChosen = chosenItem;
   UIstate = ref(loadingState[1]);
 }
@@ -113,11 +117,10 @@ randomlySuggest();
         :placeholder="placeholder"
         className="searchMovie"
         v-model="searchBar"
-        :onBlur="updateSearch"
         @keyup.enter="updateSearch"
       />
       <button type="button" :onClick="search" :disabled="!querySearchterm">
-        Search
+        🔎 Search
       </button>
 
       <button
@@ -125,7 +128,7 @@ randomlySuggest();
         :onClick="reset"
         v-if="UIstate == 'fetched' && results.length > 0"
       >
-        Start over
+        ⏮️ Start over
       </button>
     </div>
 
@@ -242,7 +245,7 @@ section {
   @media max-width(768px) {
     grid-template-areas: "intro" "search" "sugestions" "result";
   }
-  grid-template-rows: 100px 100px 1fr;
+  grid-template-rows: auto auto 1fr;
   /* background: linear-gradient(
     45deg,
     var(--primary-20),
@@ -295,7 +298,7 @@ input[type="search"]:focus-visible {
   font-size: 1.6rem;
   line-height: 2rem;
   padding: 0.2rem 1rem;
-  border-radius: 10px;
+  border-radius: 16px;
   max-height: 2.4rem;
   transition: box-shadow 200ms ease-in-out;
   flex-grow: 0;
@@ -303,11 +306,19 @@ input[type="search"]:focus-visible {
   color: white;
 }
 
+.searchbar button[type="reset"] {
+  background-color: var(--secondary);
+}
 .searchbar button:hover,
 .searchbar button:focus {
   transition: all 200ms ease-in-out;
   background-color: var(--secondary);
   cursor: pointer;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+}
+.searchbar button[type="reset"]:hover,
+.searchbar button[type="reset"]:focus {
+  background-color: var(--primary);
 }
 
 .searchbar button:disabled {
@@ -325,6 +336,7 @@ p.intro {
   position: relative;
   z-index: 10;
   background-blend-mode: multiply;
+  color: var(--color-text);
   text-shadow: 0 0 white;
 }
 .suggestions {
@@ -369,7 +381,9 @@ span.suggestion:focus {
   position: relative;
   background-color: var(--secondary);
 }
-
+.card p {
+  color: var(--color-text-inverted);
+}
 .card-title {
   position: relative;
   z-index: 10;
@@ -381,7 +395,7 @@ span.suggestion:focus {
 
 .card-title .release {
   font-size: 60%;
-  color: var(--color-text);
+  color: var(--color-text-inverted);
 }
 
 .title-container {
@@ -391,7 +405,7 @@ span.suggestion:focus {
 
 .rating-container {
   font-size: 2rem;
-  color: var(--white);
+  color: var(--color-text-inverted);
   position: relative;
   z-index: 10;
 }
@@ -401,7 +415,7 @@ span.suggestion:focus {
 .rating-container span.votes {
   font-style: italic;
   font-size: 60%;
-  color: var(--color-text);
+  color: var(--color-text-inverted);
 }
 
 .card img.card-backdrop {
@@ -485,17 +499,18 @@ span.suggestion:focus {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .card {
     width: 100% !important;
     box-sizing: border-box;
   }
 
-  section {
-    outline: 1px solid blue;
+  section .searchbar {
+    flex-direction: column;
+    flex-wrap: nowrap;
   }
-  * {
-    outline: 1px solid red;
+  section .searchbar > * {
+    flex-grow: 1;
   }
 }
 </style>
