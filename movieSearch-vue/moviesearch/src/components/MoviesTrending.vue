@@ -1,19 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import axios from "axios";
-let placeholder = ref("Type here to start searching...");
-const suggestions = [
-  "Star Wars",
-  "Spiderman",
-  "James Bond",
-  "Spongebob Squarepants",
-  "The Godfather",
-  "The Shawshank Redemption",
-  "The Matrix",
-  "the Lego Movie",
-];
-let randomChosen: number;
-let searchBar = ref("");
 let queryLoading = ref(false);
 let loadingState = reactive([
   "loading",
@@ -23,123 +10,34 @@ let loadingState = reactive([
   "failed",
 ]);
 let UIstate = ref("");
-let querySearchterm = ref("");
+
 let results = reactive([]);
-const APIstringMovie =
-  "https://api.themoviedb.org/3/search/movie?api_key=23c5356f958b1e94833e90b920184182&query=";
+const APIstringTrending =
+  "https://api.themoviedb.org/3/trending/movie/week?language=en-US&api_key=23c5356f958b1e94833e90b920184182";
 
-function randomlySuggest() {
-  let items = suggestions.length || 0;
-  let min = Math.floor(0);
-  let max = Math.floor(items);
-  let chosenItem = Math.floor(Math.random() * (max - min) + min);
-  if (chosenItem === randomChosen) {
-    console.log("randomly chose the same number");
-    chosenItem = Math.floor(Math.random() * (max - min) + min);
-  }
-  randomChosen = chosenItem;
-  UIstate = ref(loadingState[1]);
-}
-
-function addSuggestion() {
-  searchBar.value = suggestions[`${randomChosen}`];
-  querySearchterm.value = searchBar.value;
-  console.log({ placeholder, searchBar });
-  randomlySuggest();
-}
-
-function search(this: any) {
-  if (searchBar.value !== "") {
-    querySearchterm.value = searchBar.value;
-    queryLoading.value = true;
-    UIstate.value = loadingState[2];
-    axios
-      .get(APIstringMovie + querySearchterm.value)
-      .then((res) => {
-        results = res.data.results;
-        console.table(results);
-        UIstate.value = loadingState[3];
-      })
-      .catch((error: any) => ({ error, isLoading: false }));
-  } else {
-    querySearchterm.value = "";
-    queryLoading.value = false;
-    UIstate.value = loadingState[4];
-
-    return;
-  }
+function getTrending(this: any) {
+  queryLoading.value = true;
+  UIstate.value = loadingState[2];
+  axios
+    .get(APIstringTrending)
+    .then((res) => {
+      results = res.data.results;
+      console.table(results);
+      UIstate.value = loadingState[3];
+    })
+    .catch((error: any) => ({ error, isLoading: false }));
 }
 
 function getYear(a: string | any[]) {
   return a.slice(0, 4);
 }
 
-function updateSearch() {
-  console.log("updateSearch ran");
-  console.log({ searchBar });
-
-  if (searchBar.value === "") {
-    querySearchterm.value = "";
-    queryLoading.value = false;
-    UIstate.value = loadingState[1];
-  } else {
-    search();
-  }
-}
-function reset() {
-  console.log("reset ran");
-  console.log({ searchBar });
-  searchBar.value = "";
-  querySearchterm.value = "";
-  queryLoading.value = false;
-  UIstate.value = loadingState[1];
-  results = [];
-  console.log({ querySearchterm, queryLoading, UIstate });
-}
-function triggerFetching() {
-  UIstate.value = loadingState[2];
-}
-
-randomlySuggest();
+getTrending();
 </script>
 
 <template>
-  <p class="intro">
-    To start using this site, please enter a search query to look for Movie
-    titles.
-  </p>
-  <div class="searchbar">
-    <input
-      type="search"
-      name="movieSearch"
-      id="movieSearch"
-      :placeholder="placeholder"
-      className="searchMovie"
-      v-model="searchBar"
-      @keyup.enter="updateSearch"
-    />
-    <button type="button" :onClick="search" :disabled="!querySearchterm">
-      🔎 Search
-    </button>
+  <p class="intro">Here are the 20 most trending movies right now!</p>
 
-    <button
-      type="reset"
-      :onClick="reset"
-      v-if="UIstate == 'fetched' && results.length > 0"
-    >
-      ⏮️ Start over
-    </button>
-  </div>
-
-  <div v-if="UIstate == 'loaded'" class="suggestions">
-    How about:
-    <!-- <template v-for="(idea, index) in suggestions" :key="index">
-            <span :class="`idea-${index}`">{{ idea }}</span>
-        </template> -->
-    <span class="suggestion" :onClick="addSuggestion"
-      >"{{ suggestions[`${randomChosen}`] }}"</span
-    >
-  </div>
   <div v-if="UIstate == 'fetching' && results.length == 0" class="loading">
     <div class="lds-ripple">
       <div></div>
@@ -152,7 +50,7 @@ randomlySuggest();
   >
     <div class="card-iterator">
       <div
-        class="card"
+        class="card card-trending"
         v-for="{
           index,
           title,
@@ -167,7 +65,7 @@ randomlySuggest();
       >
         <div class="title-container">
           <h3 class="card-title">
-            {{ title }}
+            number: {{ index + 1 }}
             <span class="release" v-if="release_date != ''"
               >({{ getYear(release_date) }})</span
             >
@@ -179,64 +77,67 @@ randomlySuggest();
             <span class="votes">/{{ vote_count }}</span>
           </div>
         </div>
-        <img
+        <!-- <img
           v-if="backdrop_path != null"
           :src="`https://image.tmdb.org/t/p/w1400_and_h450_face${backdrop_path}`"
           :alt="title"
           class="card-backdrop"
-        />
-        <img
+        /> -->
+        <!-- <img
           v-if="backdrop_path == null"
           src="./../assets/fallback-background.jpg"
           alt=""
           class="card-backdrop fallback"
+        /> -->
+        <!-- <p> -->
+        <img
+          v-if="poster_path != null"
+          :src="`https://image.tmdb.org/t/p/w185/${poster_path}`"
+          :alt="title"
+          class="card-poster"
         />
-        <p>
-          <img
-            v-if="poster_path != null"
-            :src="`https://image.tmdb.org/t/p/w185/${poster_path}`"
-            :alt="title"
-            class="card-poster"
-          />
-          {{ overview }}
-          <!-- <video
-              src="https://www.themoviedb.org/video/play?key=3j7rDLpLTkM"
-              controls
-              autoplay
-            /> -->
-        </p>
+        <!-- {{ overview }} -->
+        <!-- </p> -->
       </div>
     </div>
   </div>
-
   <div class="dump">
-    <div v-if="UIstate == 'loading'">⌛️ loading</div>
-    <div v-if="UIstate == 'loaded'">✅ loaded</div>
-    <div v-if="UIstate == 'fetching'">🚀 fetching</div>
-    <div v-if="UIstate == 'fetched'">🏁 fetched</div>
-    <div v-if="UIstate == 'failed'">❌ failed</div>
-    <button :onClick="triggerFetching">trigger fetching</button>
-    <button :onClick="reset">reset</button>
-    <details>
-      <summary>randomChosen</summary>
-      {{ randomChosen }}
-    </details>
-    <details>
-      <summary>queryLoading</summary>
-      {{ queryLoading }}
-    </details>
-    <details>
-      <summary>querySearchterm</summary>
-      {{ querySearchterm }}
-    </details>
     <details>
       <summary>Results</summary>
+      {{ results.findIndex((x: any) => x.title == "The Pope's Exorcist") }}
       {{ results }}
     </details>
   </div>
 </template>
 
 <style scoped>
+section {
+  display: grid;
+  grid-template-areas: "intro intro intro" "search search search" "sugestions sugestions sugestions" "result result result";
+  grid-template-columns: 1fr;
+  @media max-width(768px) {
+    grid-template-areas: "intro" "search" "sugestions" "result";
+  }
+  grid-template-rows: auto auto 1fr;
+  /* background: linear-gradient(
+    45deg,
+    var(--primary-20),
+    var(--primary) 15%,
+    var(--secondary),
+    var(--secondary-20)
+  ); */
+  background: radial-gradient(
+    ellipse at top left,
+    var(--primary),
+    var(--secondary-20),
+    transparent
+  );
+  min-height: 80vh;
+  /* min-width: auto; */
+  transition: background 200ms ease-in-out;
+  padding: 0.25rem;
+}
+
 section > input:focus {
   background: linear-gradient(45deg, var(--primary-20), var(--secondary-20));
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MovieSearchVue from "./components/MovieSearch.vue";
+import MoviesTrendingVue from "./components/MoviesTrending.vue";
 </script>
 
 <template>
@@ -8,6 +9,7 @@ import MovieSearchVue from "./components/MovieSearch.vue";
     <p class="subheading">Powered by the The MovieDB</p>
   </header>
   <main>
+    <MoviesTrendingVue />
     <MovieSearchVue />
   </main>
 </template>
