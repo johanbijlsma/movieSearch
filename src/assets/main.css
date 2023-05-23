@@ -1,0 +1,62 @@
+@import "./base.css";
+
+:root {
+    --primary: hsla(160, 100%, 37%, 1);
+    --primary-20: hsla(160, 100%, 37%, 0.2);
+    --secondary: hsl(261, 88%, 48%, 1);
+    --secondary-20: hsl(261, 88%, 48%, 0.2);
+    --white: hsl(0, 0%, 100%);
+    --alert: hsla(0, 100%, 37%, 0.5);
+}
+
+#app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+
+    font-family: 'Fredoka',
+        sans-serif;
+    font-weight: 300;
+}
+
+a,
+.green {
+    text-decoration: none;
+    color: var(--primary);
+    transition: 0.4s;
+}
+
+header {
+    display: block !important;
+    width: 100%;
+    border-bottom: 1px dashed;
+    margin-bottom: 3px;
+    color: var(--text-color)
+}
+
+p.subheading {
+    display: block;
+    text-transform: uppercase;
+    opacity: 0.75;
+    color: var(--primary);
+    transform: translate(0, -10px);
+}
+
+@media (hover: hover) {
+    a:hover {
+        background-color: hsla(160, 100%, 37%, 0.2);
+    }
+}
+
+@media (min-width: 1024px) {
+    body {
+        display: flex;
+        /* place-items: center; */
+    }
+
+    #app {
+        /* display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0 2rem; */
+    }
+}
