@@ -11,6 +11,7 @@ let loadingState = reactive([
 ]);
 let UIstate = ref("");
 
+let trendNumber = 1;
 let results = reactive([]);
 const APIstringTrending =
   "https://api.themoviedb.org/3/trending/movie/week?language=en-US&api_key=23c5356f958b1e94833e90b920184182";
@@ -23,7 +24,9 @@ function getTrending(this: any) {
     .then((res) => {
       results = res.data.results;
       console.table(results);
+
       UIstate.value = loadingState[3];
+      trendNumber = 1;
     })
     .catch((error: any) => ({ error, isLoading: false }));
 }
@@ -36,89 +39,73 @@ getTrending();
 </script>
 
 <template>
-  <p class="intro">Here are the 20 most trending movies right now!</p>
+  <section>
+    <p class="intro">Here are the 20 most trending movies right now!</p>
 
-  <div v-if="UIstate == 'fetching' && results.length == 0" class="loading">
-    <div class="lds-ripple">
-      <div></div>
-      <div></div>
+    <div v-if="UIstate == 'fetching' && results.length == 0" class="loading">
+      <div class="lds-ripple">
+        <div></div>
+        <div></div>
+      </div>
     </div>
-  </div>
-  <div
-    v-if="UIstate == 'fetched' && results.length > 0"
-    class="content-wrapper"
-  >
-    <div class="card-iterator">
-      <div
-        class="card card-trending"
-        v-for="{
-          index,
-          title,
-          backdrop_path,
-          overview,
-          poster_path,
-          vote_average,
-          vote_count,
-          release_date,
-        } in results"
-        :key="index"
-      >
-        <div class="title-container">
-          <h3 class="card-title">
-            number: {{ index + 1 }}
-            <span class="release" v-if="release_date != ''"
-              >({{ getYear(release_date) }})</span
-            >
-          </h3>
-          <div class="rating-container" v-if="vote_average != 0">
-            <span class="rating"
-              >{{ Math.round(vote_average * 10) / 10 }}
-            </span>
-            <span class="votes">/{{ vote_count }}</span>
+    <div
+      v-if="UIstate == 'fetched' && results.length > 0"
+      class="content-wrapper"
+    >
+      <div class="card-iterator">
+        <div
+          class="card card-trending"
+          v-for="{ index, title, poster_path } in results"
+          :key="index"
+        >
+          <img
+            v-if="poster_path != null"
+            :src="`https://image.tmdb.org/t/p/w300/${poster_path}`"
+            :alt="title"
+            class="card-poster"
+          />
+          <div class="title-container">
+            <h3 class="card-title">
+              <!-- {{ title }} -->
+              {{ trendNumber++ }}
+            </h3>
           </div>
-        </div>
-        <!-- <img
+          <!-- <img
           v-if="backdrop_path != null"
           :src="`https://image.tmdb.org/t/p/w1400_and_h450_face${backdrop_path}`"
           :alt="title"
           class="card-backdrop"
         /> -->
-        <!-- <img
+          <!-- <img
           v-if="backdrop_path == null"
           src="./../assets/fallback-background.jpg"
           alt=""
           class="card-backdrop fallback"
         /> -->
-        <!-- <p> -->
-        <img
-          v-if="poster_path != null"
-          :src="`https://image.tmdb.org/t/p/w185/${poster_path}`"
-          :alt="title"
-          class="card-poster"
-        />
-        <!-- {{ overview }} -->
-        <!-- </p> -->
+          <!-- <p> -->
+          <!-- {{ overview }} -->
+          <!-- </p> -->
+        </div>
       </div>
     </div>
-  </div>
+  </section>
   <div class="dump">
     <details>
       <summary>Results</summary>
       {{ results.findIndex((x: any) => x.title == "The Pope's Exorcist") }}
-      {{ results }}
     </details>
   </div>
 </template>
 
 <style scoped>
 section {
-  display: grid;
+  /* display: grid;
   grid-template-areas: "intro intro intro" "search search search" "sugestions sugestions sugestions" "result result result";
   grid-template-columns: 1fr;
   @media max-width(768px) {
     grid-template-areas: "intro" "search" "sugestions" "result";
   }
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto 1fr; */
   /* background: linear-gradient(
     45deg,
     var(--primary-20),
@@ -126,16 +113,23 @@ section {
     var(--secondary),
     var(--secondary-20)
   ); */
-  background: radial-gradient(
+  /* background: radial-gradient(
     ellipse at top left,
     var(--primary),
     var(--secondary-20),
     transparent
+  ); */
+  padding-block: 1rem;
+
+  background-image: linear-gradient(
+    360deg in oklch,
+    hsl(160 100% 31%) 22% 22%,
+    42%,
+    hsl(261 88% 26%) 85% 85%
   );
-  min-height: 80vh;
+
   /* min-width: auto; */
   transition: background 200ms ease-in-out;
-  padding: 0.25rem;
 }
 
 section > input:focus {
@@ -247,7 +241,7 @@ span.suggestion:focus {
 }
 
 .card {
-  width: 45%;
+  max-width: 45%;
   padding: 2rem;
   border: 1px solid var(--primary);
   overflow: hidden;
@@ -261,9 +255,14 @@ span.suggestion:focus {
   position: relative;
   z-index: 10;
   color: var(--primary);
-  font-size: clamp(1rem, 2.5vw, 2rem);
-  line-height: 1.1;
+  font-size: clamp(1rem, 2.5vw, 4rem);
+  line-height: 2.5rem;
   font-weight: 500;
+  box-shadow: 0px 0px 60px 30px hsl(261 88% 26%);
+  backdrop-filter: saturate(220%) blur(110px);
+  margin-top: -50px;
+  border-radius: 50%;
+  padding: 23px 37px 25px;
 }
 
 .card-title .release {
@@ -307,11 +306,9 @@ span.suggestion:focus {
 }
 
 .card img.card-poster {
-  float: right;
   border: 3px solid #fff;
   box-shadow: 0 0 5px #000;
-  /* margin: -2px 10px 10px 10px; */
-  transform: scale(0.75);
+  /* transform: scale(0.75); */
   transform-origin: 120% 0%;
 }
 /* styling for the debug pannel */
@@ -374,8 +371,9 @@ span.suggestion:focus {
 
 @media (max-width: 900px) {
   .card {
-    width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box;
+    transform: scale(0.75);
   }
 
   section .searchbar {

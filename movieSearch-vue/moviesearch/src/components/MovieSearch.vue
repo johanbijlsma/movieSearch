@@ -104,111 +104,107 @@ randomlySuggest();
 </script>
 
 <template>
-  <p class="intro">
-    To start using this site, please enter a search query to look for Movie
-    titles.
-  </p>
-  <div class="searchbar">
-    <input
-      type="search"
-      name="movieSearch"
-      id="movieSearch"
-      :placeholder="placeholder"
-      className="searchMovie"
-      v-model="searchBar"
-      @keyup.enter="updateSearch"
-    />
-    <button type="button" :onClick="search" :disabled="!querySearchterm">
-      🔎 Search
-    </button>
+  <section>
+    <p class="intro">
+      To start using this site, please enter a search query to look for Movie
+      titles.
+    </p>
+    <div class="searchbar">
+      <input
+        type="search"
+        name="movieSearch"
+        id="movieSearch"
+        :placeholder="placeholder"
+        className="searchMovie"
+        v-model="searchBar"
+        @keyup.enter="updateSearch"
+      />
+      <button type="button" :onClick="search" :disabled="!querySearchterm">
+        🔎 Search
+      </button>
 
-    <button
-      type="reset"
-      :onClick="reset"
-      v-if="UIstate == 'fetched' && results.length > 0"
-    >
-      ⏮️ Start over
-    </button>
-  </div>
+      <button
+        type="reset"
+        :onClick="reset"
+        v-if="UIstate == 'fetched' && results.length > 0"
+      >
+        ⏮️ Start over
+      </button>
+    </div>
 
-  <div v-if="UIstate == 'loaded'" class="suggestions">
-    How about:
-    <!-- <template v-for="(idea, index) in suggestions" :key="index">
+    <div v-if="UIstate == 'loaded'" class="suggestions">
+      How about:
+      <!-- <template v-for="(idea, index) in suggestions" :key="index">
             <span :class="`idea-${index}`">{{ idea }}</span>
         </template> -->
-    <span class="suggestion" :onClick="addSuggestion"
-      >"{{ suggestions[`${randomChosen}`] }}"</span
-    >
-  </div>
-  <div v-if="UIstate == 'fetching' && results.length == 0" class="loading">
-    <div class="lds-ripple">
-      <div></div>
-      <div></div>
-    </div>
-  </div>
-  <div
-    v-if="UIstate == 'fetched' && results.length > 0"
-    class="content-wrapper"
-  >
-    <div class="card-iterator">
-      <div
-        class="card"
-        v-for="{
-          index,
-          title,
-          backdrop_path,
-          overview,
-          poster_path,
-          vote_average,
-          vote_count,
-          release_date,
-        } in results"
-        :key="index"
+      <span class="suggestion" :onClick="addSuggestion"
+        >"{{ suggestions[`${randomChosen}`] }}"</span
       >
-        <div class="title-container">
-          <h3 class="card-title">
-            {{ title }}
-            <span class="release" v-if="release_date != ''"
-              >({{ getYear(release_date) }})</span
-            >
-          </h3>
-          <div class="rating-container" v-if="vote_average != 0">
-            <span class="rating"
-              >{{ Math.round(vote_average * 10) / 10 }}
-            </span>
-            <span class="votes">/{{ vote_count }}</span>
-          </div>
-        </div>
-        <img
-          v-if="backdrop_path != null"
-          :src="`https://image.tmdb.org/t/p/w1400_and_h450_face${backdrop_path}`"
-          :alt="title"
-          class="card-backdrop"
-        />
-        <img
-          v-if="backdrop_path == null"
-          src="./../assets/fallback-background.jpg"
-          alt=""
-          class="card-backdrop fallback"
-        />
-        <p>
-          <img
-            v-if="poster_path != null"
-            :src="`https://image.tmdb.org/t/p/w185/${poster_path}`"
-            :alt="title"
-            class="card-poster"
-          />
-          {{ overview }}
-          <!-- <video
-              src="https://www.themoviedb.org/video/play?key=3j7rDLpLTkM"
-              controls
-              autoplay
-            /> -->
-        </p>
+    </div>
+    <div v-if="UIstate == 'fetching' && results.length == 0" class="loading">
+      <div class="lds-ripple">
+        <div></div>
+        <div></div>
       </div>
     </div>
-  </div>
-
+    <div
+      v-if="UIstate == 'fetched' && results.length > 0"
+      class="content-wrapper"
+    >
+      <div class="card-iterator">
+        <div
+          class="card"
+          v-for="{
+            index,
+            title,
+            backdrop_path,
+            overview,
+            poster_path,
+            vote_average,
+            vote_count,
+            release_date,
+          } in results"
+          :key="index"
+        >
+          <div class="title-container">
+            <h3 class="card-title">
+              {{ title }}
+              <span class="release" v-if="release_date != ''"
+                >({{ getYear(release_date) }})</span
+              >
+            </h3>
+            <div class="rating-container" v-if="vote_average != 0">
+              <span class="rating"
+                >{{ Math.round(vote_average * 10) / 10 }}
+              </span>
+              <span class="votes">/{{ vote_count }}</span>
+            </div>
+          </div>
+          <img
+            v-if="backdrop_path != null"
+            :src="`https://image.tmdb.org/t/p/w1400_and_h450_face${backdrop_path}`"
+            :alt="title"
+            class="card-backdrop"
+          />
+          <img
+            v-if="backdrop_path == null"
+            src="./../assets/fallback-background.jpg"
+            alt=""
+            class="card-backdrop fallback"
+          />
+          <p>
+            <img
+              v-if="poster_path != null"
+              :src="`https://image.tmdb.org/t/p/w185/${poster_path}`"
+              :alt="title"
+              class="card-poster"
+            />
+            {{ overview }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
   <div class="dump">
     <div v-if="UIstate == 'loading'">⌛️ loading</div>
     <div v-if="UIstate == 'loaded'">✅ loaded</div>
@@ -237,8 +233,23 @@ randomlySuggest();
 </template>
 
 <style scoped>
+section {
+  padding-block: 1rem;
+  background-image: radial-gradient(
+    farthest-corner ellipse at 1% 3% in oklch,
+    hsl(160 100% 37%) 22% 22%,
+    42%,
+    hsl(261 88% 48%) 57% 57%
+  );
+}
 section > input:focus {
-  background: linear-gradient(45deg, var(--primary-20), var(--secondary-20));
+  /* background: linear-gradient(45deg, var(--primary-20), var(--secondary-20)); */
+  background-image: radial-gradient(
+    farthest-corner ellipse at 1% 3% in oklch,
+    hsl(160 100% 37%) 22% 22%,
+    42%,
+    hsl(261 88% 48%) 57% 57%
+  );
 }
 .searchbar {
   grid-area: search;
