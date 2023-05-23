@@ -118,6 +118,7 @@ randomlySuggest();
         className="searchMovie"
         v-model="searchBar"
         @keyup.enter="updateSearch"
+        @onblur="updateSearch"
       />
       <button type="button" :onClick="search" :disabled="!querySearchterm">
         🔎 Search
