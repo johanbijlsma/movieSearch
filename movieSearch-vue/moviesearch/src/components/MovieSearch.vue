@@ -205,7 +205,7 @@ randomlySuggest();
       </div>
     </div>
   </section>
-  <div class="dump">
+  <!-- <div class="dump">
     <div v-if="UIstate == 'loading'">⌛️ loading</div>
     <div v-if="UIstate == 'loaded'">✅ loaded</div>
     <div v-if="UIstate == 'fetching'">🚀 fetching</div>
@@ -229,7 +229,7 @@ randomlySuggest();
       <summary>Results</summary>
       {{ results }}
     </details>
-  </div>
+  </div> -->
 </template>
 
 <style scoped>

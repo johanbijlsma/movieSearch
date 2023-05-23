@@ -9,8 +9,8 @@ import MoviesTrendingVue from "./components/MoviesTrending.vue";
     <p class="subheading">Powered by the The MovieDB</p>
   </header>
   <main>
-    <MoviesTrendingVue />
     <MovieSearchVue />
+    <MoviesTrendingVue />
   </main>
 </template>
 

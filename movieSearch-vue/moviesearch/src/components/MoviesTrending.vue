@@ -40,7 +40,9 @@ getTrending();
 
 <template>
   <section>
-    <p class="intro">Here are the 20 most trending movies right now!</p>
+    <p class="intro">
+      Or start by browsing the 20 most trending movies right now!
+    </p>
 
     <div v-if="UIstate == 'fetching' && results.length == 0" class="loading">
       <div class="lds-ripple">
@@ -255,14 +257,18 @@ span.suggestion:focus {
   position: relative;
   z-index: 10;
   color: var(--primary);
-  font-size: clamp(1rem, 2.5vw, 4rem);
+  font-size: clamp(1rem, 2.5vw, 2.7rem);
   line-height: 2.5rem;
   font-weight: 500;
   box-shadow: 0px 0px 60px 30px hsl(261 88% 26%);
   backdrop-filter: saturate(220%) blur(110px);
   margin-top: -50px;
   border-radius: 50%;
-  padding: 23px 37px 25px;
+  padding: 14px;
+  aspect-ratio: 1/1;
+  width: 70px;
+  height: 70px;
+  text-align: center;
 }
 
 .card-title .release {
