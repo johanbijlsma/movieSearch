@@ -166,12 +166,18 @@
 	}
 
 	img.card-poster {
-		float: right;
+		@media screen and (min-width: 768px) {
+			float: right;
+			transform-origin: 50% 20%;
+			transform: scale(0.75);
+		}
+		margin: 10px auto;
+		display: block;
 		border: 3px solid #fff;
 		box-shadow: 0 0 5px #000;
 		/* margin: -2px 10px 10px 10px; */
-		transform: scale(0.75);
-		transform-origin: 120% 0%;
+		position: relative;
+		z-index: 100;
 	}
 	span.title {
 		color: var(--primary);

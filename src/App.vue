@@ -1,7 +1,4 @@
-<script setup lang="ts">
-	import MovieSearchVue from './components/MovieSearch.vue';
-	import MoviesTrendingVue from './components/MoviesTrending.vue';
-</script>
+<script setup lang="ts"></script>
 
 <template>
 	<header>
