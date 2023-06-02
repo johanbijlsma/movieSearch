@@ -417,6 +417,8 @@
 		-webkit-filter: contrast(0.4) brightness(0.4);
 		transition: all 100ms ease-in-out;
 		transform: scale(1.5);
+		height: 100%;
+		width: 100%;
 	}
 	.card:hover img.card-backdrop {
 		-webkit-filter: contrast(0.4) brightness(0.5) opacity(0.7);

@@ -1,6 +1,16 @@
 # moviesearch
 
-This template should help get you started developing with Vue 3 in Vite.
+Personal site project for experimenting with Vue3, Axios and Api's
+
+status: [![Netlify Status](https://api.netlify.com/api/v1/badges/a72535dc-a8cb-4e08-9c81-2691028d7896/deploy-status)](https://app.netlify.com/sites/johans-vue-moviesearch/deploys)
+
+I made this webapp to keep on learning new technologies. I have added some nice features, and more is still to come:
+
+- [x] fetch and display this weeks top 20 movies
+- [x] Search for movies
+- [x] display more information on selected movies
+
+All data comes from the API provided by [TheMovieDB](https://www.themoviedb.org/).
 
 ## Recommended IDE Setup
 
@@ -13,8 +23,8 @@ TypeScript cannot handle type information for `.vue` imports by default, so we r
 If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
 
 1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
 ## Customize configuration

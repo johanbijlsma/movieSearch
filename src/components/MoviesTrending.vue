@@ -307,9 +307,18 @@
 		transition: all 100ms ease-in-out;
 		transform: scale(1.5);
 	}
-	.card:hover img.card-backdrop {
-		-webkit-filter: contrast(0.4) brightness(0.5) opacity(0.7);
-		transform: scale(1.65);
+	.card:hover img.card-poster {
+		transform: skew(6deg, -11deg) rotate(5deg) scale(0.75);
+		box-shadow: 0 0 5px 0px var(--white), 0 0 10px 8px oklch(0 0 0 / 0.73);
+		transition: all 200ms ease-in-out;
+	}
+	.card:hover {
+		background-color: var(--primary);
+		transition: all 200ms ease-in-out;
+	}
+
+	.card:hover h3 {
+		color: var(--white);
 		transition: all 200ms ease-in-out;
 	}
 
@@ -317,7 +326,7 @@
 		border: 3px solid #fff;
 		box-shadow: 0 0 5px #000;
 		/* transform: scale(0.75); */
-		transform-origin: 120% 0%;
+		transform-origin: 50% 50%;
 	}
 	/* styling for the debug pannel */
 
