@@ -1,6 +1,9 @@
 <script setup lang="ts">
 	import { reactive, ref } from 'vue';
 	import axios from 'axios';
+	import { useRoute } from 'vue-router';
+	import { toNumber } from '@vue/shared';
+
 	let queryLoading = ref(false);
 	let loadingState = reactive([
 		'loading',
@@ -10,28 +13,36 @@
 		'failed',
 	]);
 	let UIstate = ref('');
-
+	let movieID: number;
 	let results = reactive([]);
-	const APIstringDetail =
-		'https://api.themoviedb.org/3/movie/502356?api_key=23c5356f958b1e94833e90b920184182';
+	const APIstringDetailStart = `https://api.themoviedb.org/3/movie/`;
+	const APIstringDetailEnd = `?api_key=23c5356f958b1e94833e90b920184182`;
 
-	function getDetails(this: any) {
+	async function getDetails(this: any) {
 		queryLoading.value = true;
+		getMovieID();
 		UIstate.value = loadingState[2];
-		axios
-			.get(APIstringDetail)
-			.then((res) => {
-				results = res.data;
-				console.table(results);
+		if (movieID !== undefined) {
+			axios
+				.get(APIstringDetailStart + movieID + APIstringDetailEnd)
+				.then((res) => {
+					results = res.data;
+					console.table(results);
 
-				UIstate.value = loadingState[3];
-				trendNumber = 1;
-			})
-			.catch((error: any) => ({ error, isLoading: false }));
+					UIstate.value = loadingState[3];
+				})
+				.catch((error: any) => ({ error, isLoading: false }));
+		}
 	}
 
 	function getYear(a: string | any[]) {
 		return a.slice(0, 4);
+	}
+
+	function getMovieID() {
+		console.log(useRoute().params.id);
+		movieID = toNumber(useRoute().params.id);
+		console.log({ movieID });
 	}
 	function styleMoney(a: number) {
 		return a.toLocaleString('en-US', {
@@ -51,7 +62,6 @@
 				<div></div>
 			</div>
 		</div>
-
 		<div v-if="UIstate == 'fetched' && results != []" class="content-wrapper">
 			<img
 				v-if="results.poster_path != null"
@@ -83,7 +93,7 @@
 				<li>
 					budget: <span class="detail">{{ styleMoney(results.budget) }}</span>
 				</li>
-				<li>
+				<li v-if="results.status != 'Released'">
 					revenue: <span class="detail">{{ styleMoney(results.revenue) }}</span>
 				</li>
 				<li>
@@ -103,7 +113,7 @@
 						v-for="{ index, name, logo_path } in results.production_companies"
 						:key="index"
 					>
-						<li>
+						<li v-if="logo_path != null">
 							<span class="hidden">{{ name }} </span>
 							<img
 								:src="`https://www.themoviedb.org/t/p/h30${logo_path}`"
@@ -150,16 +160,22 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+
+	.flex-container > ul {
+		list-style: none;
+		padding-inline-start: 0px;
+		margin-block: 1.2rem;
 	}
 
 	.column {
-		@media screen and (min-width: 768px) {
-			columns: 2;
-		}
+		color: var(--color-text-darkbg);
 	}
 
 	span.detail {
-		text-shadow: 0 0 white;
+		text-shadow: 0 0 var(--text-shadow);
+		color: var(--primary);
 	}
 	span.hidden {
 		display: none;
@@ -182,28 +198,31 @@
 	span.title {
 		color: var(--primary);
 		font-weight: 700;
+		@media (prefers-color-scheme: dark) {
+			text-shadow: 0 0 5px 10px var(--secondary);
+		}
 	}
 	section {
 		/* display: grid;
-  grid-template-areas: "intro intro intro" "search search search" "sugestions sugestions sugestions" "result result result";
-  grid-template-columns: 1fr;
-  @media max-width(768px) {
-    grid-template-areas: "intro" "search" "sugestions" "result";
-  }
-  grid-template-rows: auto auto 1fr; */
+	 grid-template-areas: "intro intro intro" "search search search" "sugestions sugestions sugestions" "result result result";
+	 grid-template-columns: 1fr;
+	 @media max-width(768px) {
+	   grid-template-areas: "intro" "search" "sugestions" "result";
+	 }
+	 grid-template-rows: auto auto 1fr; */
 		/* background: linear-gradient(
-    45deg,
-    var(--primary-20),
-    var(--primary) 15%,
-    var(--secondary),
-    var(--secondary-20)
-  ); */
+	   45deg,
+	   var(--primary-20),
+	   var(--primary) 15%,
+	   var(--secondary),
+	   var(--secondary-20)
+	 ); */
 		/* background: radial-gradient(
-    ellipse at top left,
-    var(--primary),
-    var(--secondary-20),
-    transparent
-  ); */
+	   ellipse at top left,
+	   var(--primary),
+	   var(--secondary-20),
+	   transparent
+	 ); */
 		/* padding-block: 1rem; */
 		position: relative;
 		background-image: linear-gradient(
@@ -288,8 +307,8 @@
 		position: relative;
 		z-index: 10;
 		background-blend-mode: multiply;
-		color: var(--color-text);
-		text-shadow: 0 0 white;
+		color: var(--color-text-darkbg);
+		text-shadow: 0 0 var(--text-shadow);
 	}
 	p.second-intro {
 		grid-area: intro;
@@ -299,8 +318,8 @@
 		position: relative;
 		z-index: 10;
 		background-blend-mode: multiply;
-		color: var(--color-text);
-		text-shadow: 0 0 white;
+		color: var(--color-text-darkbg);
+		text-shadow: 0 0 var(--text-shadow);
 		margin-inline: 5rem;
 	}
 	.suggestions {
@@ -308,7 +327,7 @@
 		font-size: 1.6rem;
 		text-align: center;
 		margin-top: 1.2rem;
-		text-shadow: 0 0 white;
+		text-shadow: 0 0 var(--text-shadow);
 	}
 
 	span.suggestion:hover,

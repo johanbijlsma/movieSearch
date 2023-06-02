@@ -165,44 +165,47 @@
 						vote_average,
 						vote_count,
 						release_date,
+						id,
 					} in results"
 					:key="index"
 				>
-					<div class="title-container">
-						<h3 class="card-title">
-							{{ title }}
-							<span class="release" v-if="release_date != ''"
-								>({{ getYear(release_date) }})</span
-							>
-						</h3>
-						<div class="rating-container" v-if="vote_average != 0">
-							<span class="rating"
-								>{{ Math.round(vote_average * 10) / 10 }}
-							</span>
-							<span class="votes">/{{ vote_count }}</span>
+					<router-link :to="`/detail/${id}`">
+						<div class="title-container">
+							<h3 class="card-title">
+								{{ title }}
+								<span class="release" v-if="release_date != ''"
+									>({{ getYear(release_date) }})</span
+								>
+							</h3>
+							<div class="rating-container" v-if="vote_average != 0">
+								<span class="rating"
+									>{{ Math.round(vote_average * 10) / 10 }}
+								</span>
+								<span class="votes">/{{ vote_count }}</span>
+							</div>
 						</div>
-					</div>
-					<img
-						v-if="backdrop_path != null"
-						:src="`https://image.tmdb.org/t/p/w1400_and_h450_face${backdrop_path}`"
-						:alt="title"
-						class="card-backdrop"
-					/>
-					<img
-						v-if="backdrop_path == null"
-						src="./../assets/fallback-background.jpg"
-						alt=""
-						class="card-backdrop fallback"
-					/>
-					<p>
 						<img
-							v-if="poster_path != null"
-							:src="`https://image.tmdb.org/t/p/w185/${poster_path}`"
+							v-if="backdrop_path != null"
+							:src="`https://image.tmdb.org/t/p/w1400_and_h450_face${backdrop_path}`"
 							:alt="title"
-							class="card-poster"
+							class="card-backdrop"
 						/>
-						{{ overview }}
-					</p>
+						<img
+							v-if="backdrop_path == null"
+							src="./../assets/fallback-background.jpg"
+							alt=""
+							class="card-backdrop fallback"
+						/>
+						<p>
+							<img
+								v-if="poster_path != null"
+								:src="`https://image.tmdb.org/t/p/w185/${poster_path}`"
+								:alt="title"
+								class="card-poster"
+							/>
+							{{ overview }}
+						</p>
+					</router-link>
 				</div>
 			</div>
 		</div>
@@ -321,15 +324,16 @@
 		position: relative;
 		z-index: 10;
 		background-blend-mode: multiply;
-		color: var(--color-text);
-		text-shadow: 0 0 white;
+		color: var(--color-text-darkbg);
+		text-shadow: 0 0 var(--text-shadow);
 	}
 	.suggestions {
 		grid-area: sugestions;
 		font-size: 1.6rem;
 		text-align: center;
 		margin-top: 1.2rem;
-		text-shadow: 0 0 white;
+		color: var(--color-text-darkbg);
+		text-shadow: 0 0 var(--text-shadow);
 	}
 
 	span.suggestion:hover,
