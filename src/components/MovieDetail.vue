@@ -14,9 +14,33 @@
 	]);
 	let UIstate = ref('');
 	let movieID: number;
-	let results = reactive([]);
+	let results: Movie[] = reactive([]);
 	const APIstringDetailStart = `https://api.themoviedb.org/3/movie/`;
 	const APIstringDetailEnd = `?api_key=23c5356f958b1e94833e90b920184182`;
+
+	interface Movie {
+		title: string;
+		poster_path: string;
+		id: number;
+		backdrop_path: string;
+		budget: null;
+		genres: [];
+		homepage: string;
+		imdb_id: string;
+		original_language: string;
+		original_title: string;
+		overview: string;
+		popularity: null;
+		production_companies: [];
+		release_date: string;
+		revenue: null;
+		runtime: null;
+		status: string;
+		tagline: string;
+		video: false;
+		vote_average: null;
+		vote_count: null;
+	}
 
 	async function getDetails(this: any) {
 		queryLoading.value = true;
@@ -62,7 +86,8 @@
 				<div></div>
 			</div>
 		</div>
-		<div v-if="UIstate == 'fetched' && results != []" class="content-wrapper">
+
+		<div v-if="UIstate == 'fetched'" class="content-wrapper">
 			<img
 				v-if="results.poster_path != null"
 				:src="`https://image.tmdb.org/t/p/w300/${results.poster_path}`"
