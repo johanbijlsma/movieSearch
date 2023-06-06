@@ -1,6 +1,9 @@
 <script setup lang="ts">
 	import { reactive, ref } from 'vue';
 	import axios from 'axios';
+	import { useRoute } from 'vue-router';
+	import { toNumber } from '@vue/shared';
+
 	let queryLoading = ref(false);
 	let loadingState = reactive([
 		'loading',
@@ -10,121 +13,250 @@
 		'failed',
 	]);
 	let UIstate = ref('');
+	let movieID: number;
+	let results: Movie;
+	const APIstringDetailStart = `https://api.themoviedb.org/3/movie/`;
+	const APIstringDetailEnd = `?api_key=23c5356f958b1e94833e90b920184182`;
 
-	let trendNumber = 1;
-	let results = reactive([]);
-	const APIstringTrending =
-		'https://api.themoviedb.org/3/trending/movie/week?language=en-US&api_key=23c5356f958b1e94833e90b920184182';
+	type Movie = {
+		title: string;
+		poster_path: string;
+		id: number;
+		backdrop_path: string;
+		budget: number;
+		genres: [];
+		homepage: string;
+		imdb_id: string;
+		original_language: string;
+		original_title: string;
+		overview: string;
+		popularity: number;
+		production_companies: [];
+		release_date: string;
+		revenue: number;
+		runtime: number;
+		status: string;
+		tagline: string;
+		video: false;
+		vote_average: number;
+		vote_count: number;
+	};
 
-	function getTrending(this: any) {
+	async function getDetails(this: any) {
 		queryLoading.value = true;
+		getMovieID();
 		UIstate.value = loadingState[2];
-		axios
-			.get(APIstringTrending)
-			.then((res) => {
-				results = res.data.results;
-				console.table(results);
+		if (movieID !== undefined) {
+			axios
+				.get(APIstringDetailStart + movieID + APIstringDetailEnd)
+				.then((res) => {
+					results = res.data;
+					console.table(results);
 
-				UIstate.value = loadingState[3];
-				trendNumber = 1;
-			})
-			.catch((error: any) => ({ error, isLoading: false }));
+					UIstate.value = loadingState[3];
+				})
+				.catch((error: any) => ({ error, isLoading: false }));
+		}
 	}
 
 	function getYear(a: string | any[]) {
 		return a.slice(0, 4);
 	}
 
-	getTrending();
+	function getMovieID() {
+		console.log(useRoute().params.id);
+		movieID = toNumber(useRoute().params.id);
+		console.log({ movieID });
+	}
+	function styleMoney(a: number) {
+		return a.toLocaleString('en-US', {
+			style: 'currency',
+			currency: 'USD',
+		});
+	}
+
+	getDetails();
 </script>
 
 <template>
 	<section>
-		<p class="intro">
-			Or start by browsing the 20 most trending movies right now!
-		</p>
-
-		<div v-if="UIstate == 'fetching' && results.length == 0" class="loading">
+		<div
+			v-if="UIstate == 'fetching' && results.id !== undefined"
+			class="loading"
+		>
 			<div class="lds-ripple">
 				<div></div>
 				<div></div>
 			</div>
 		</div>
-		<div
-			v-if="UIstate == 'fetched' && results.length > 0"
-			class="content-wrapper"
-		>
-			<div class="card-iterator">
-				<div
-					class="card card-trending"
-					v-for="{ index, title, poster_path, id } in results"
+
+		<div v-if="UIstate == 'fetched'" class="content-wrapper">
+			<img
+				v-if="results.poster_path != null"
+				:src="`https://image.tmdb.org/t/p/w300/${results.poster_path}`"
+				:alt="results.title"
+				class="card-poster"
+			/>
+			<p class="intro">
+				All the info about <span class="title">{{ results.title }}</span>
+			</p>
+			<p class="second-intro">
+				{{ results.overview }}
+			</p>
+
+			<img
+				v-if="results.backdrop_path != null"
+				:src="`https://image.tmdb.org/t/p/w1400_and_h450_face${results.backdrop_path}`"
+				:alt="results.title"
+				class="card-backdrop"
+			/>
+			<ul class="column">
+				<li>
+					original title:
+					<span class="detail">{{ results.original_title }}</span>
+				</li>
+				<li v-if="results.tagline">
+					tagline: <span class="detail">{{ results.tagline }}</span>
+				</li>
+				<li>
+					budget:
+					<span class="detail">{{ styleMoney(results.budget) }}</span>
+				</li>
+				<li v-if="results.status != 'Released'">
+					revenue:
+					<span class="detail">{{ styleMoney(results.revenue) }}</span>
+				</li>
+				<li>
+					homepage: <span class="detail">{{ results.homepage }}</span>
+				</li>
+				<li>
+					imdb_id: <span class="detail">{{ results.imdb_id }}</span>
+				</li>
+				<li>
+					original_language:
+					<span class="detail">{{ results.original_language }}</span>
+				</li>
+				<li>Production Companies:</li>
+				<div class="flex-container">
+					<ul
+						class="production_companies"
+						v-for="{ index, name, logo_path } in results.production_companies"
+						:key="index"
+					>
+						<li v-if="logo_path != null">
+							<span class="hidden">{{ name }} </span>
+							<img
+								:src="`https://www.themoviedb.org/t/p/h30${logo_path}`"
+								alt=""
+							/>
+						</li>
+					</ul>
+				</div>
+				<li>
+					popularity: <span class="detail">{{ results.popularity }}</span>
+				</li>
+				<li>
+					release_date:
+					<span class="detail">{{ results.release_date }}</span>
+				</li>
+				<li>
+					vote_average:
+					<span class="detail">{{ results.vote_average }}</span>
+				</li>
+				<li>
+					vote_count: <span class="detail">{{ results.vote_count }}</span>
+				</li>
+				<li>Genres:</li>
+				<ul
+					class="movie-genres"
+					v-for="{ index, name } in results.genres"
 					:key="index"
 				>
-					<router-link :to="`/detail/${id}`">
-						<img
-							v-if="poster_path != null"
-							:src="`https://image.tmdb.org/t/p/w300/${poster_path}`"
-							:alt="title"
-							class="card-poster"
-						/>
-						<div class="title-container">
-							<h3 class="card-title">
-								<!-- {{ title }} -->
-								{{ trendNumber++ }}
-							</h3>
-						</div>
-						<!-- <img
-          v-if="backdrop_path != null"
-          :src="`https://image.tmdb.org/t/p/w1400_and_h450_face${backdrop_path}`"
-          :alt="title"
-          class="card-backdrop"
-        /> -->
-						<!-- <img
-          v-if="backdrop_path == null"
-          src="./../assets/fallback-background.jpg"
-          alt=""
-          class="card-backdrop fallback"
-        /> -->
-						<!-- <p> -->
-						<!-- {{ overview }} -->
-						<!-- </p> -->
-					</router-link>
-				</div>
-			</div>
+					<li>
+						<span class="detail">{{ name }}</span>
+					</li>
+				</ul>
+			</ul>
 		</div>
 	</section>
 	<div class="dump">
 		<details>
 			<summary>Results</summary>
-			{{ results.findIndex((x: any) => x.title == "The Pope's Exorcist") }}
+			{{ results }}
 		</details>
 	</div>
 </template>
 
 <style scoped>
+	.flex-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+
+	.flex-container > ul {
+		list-style: none;
+		padding-inline-start: 0px;
+		margin-block: 1.2rem;
+	}
+
+	.column {
+		color: var(--color-text-darkbg);
+	}
+
+	span.detail {
+		text-shadow: 0 0 var(--text-shadow);
+		color: var(--primary);
+	}
+	span.hidden {
+		display: none;
+	}
+
+	img.card-poster {
+		@media screen and (min-width: 768px) {
+			float: right;
+			transform-origin: 50% 20%;
+			transform: scale(0.75);
+		}
+		margin: 10px auto;
+		display: block;
+		border: 3px solid #fff;
+		box-shadow: 0 0 5px #000;
+		/* margin: -2px 10px 10px 10px; */
+		position: relative;
+		z-index: 100;
+	}
+	span.title {
+		color: var(--primary);
+		font-weight: 700;
+		@media (prefers-color-scheme: dark) {
+			text-shadow: 0 0 5px 10px var(--secondary);
+		}
+	}
 	section {
 		/* display: grid;
-  grid-template-areas: "intro intro intro" "search search search" "sugestions sugestions sugestions" "result result result";
-  grid-template-columns: 1fr;
-  @media max-width(768px) {
-    grid-template-areas: "intro" "search" "sugestions" "result";
-  }
-  grid-template-rows: auto auto 1fr; */
+	 grid-template-areas: "intro intro intro" "search search search" "sugestions sugestions sugestions" "result result result";
+	 grid-template-columns: 1fr;
+	 @media max-width(768px) {
+	   grid-template-areas: "intro" "search" "sugestions" "result";
+	 }
+	 grid-template-rows: auto auto 1fr; */
 		/* background: linear-gradient(
-    45deg,
-    var(--primary-20),
-    var(--primary) 15%,
-    var(--secondary),
-    var(--secondary-20)
-  ); */
+	   45deg,
+	   var(--primary-20),
+	   var(--primary) 15%,
+	   var(--secondary),
+	   var(--secondary-20)
+	 ); */
 		/* background: radial-gradient(
-    ellipse at top left,
-    var(--primary),
-    var(--secondary-20),
-    transparent
-  ); */
-		padding-block: 1rem;
-
+	   ellipse at top left,
+	   var(--primary),
+	   var(--secondary-20),
+	   transparent
+	 ); */
+		/* padding-block: 1rem; */
+		position: relative;
 		background-image: linear-gradient(
 			360deg in oklch,
 			hsl(160 100% 31%) 22% 22%,
@@ -210,6 +342,18 @@
 		color: var(--color-text-darkbg);
 		text-shadow: 0 0 var(--text-shadow);
 	}
+	p.second-intro {
+		grid-area: intro;
+		font-size: 1.1rem;
+		text-align: center;
+		margin-block: 1.2rem;
+		position: relative;
+		z-index: 10;
+		background-blend-mode: multiply;
+		color: var(--color-text-darkbg);
+		text-shadow: 0 0 var(--text-shadow);
+		margin-inline: 5rem;
+	}
 	.suggestions {
 		grid-area: sugestions;
 		font-size: 1.6rem;
@@ -230,7 +374,7 @@
 	}
 
 	.content-wrapper {
-		/* width: 100%; */
+		width: 100%;
 		overflow: hidden;
 		grid-area: result;
 		margin-bottom: 2rem;
@@ -298,27 +442,19 @@
 		color: var(--color-text-inverted);
 	}
 
-	.card img.card-backdrop {
+	img.card-backdrop {
 		position: absolute;
 		top: 0;
-		left: -50%;
 		object-fit: cover;
 		-webkit-filter: contrast(0.4) brightness(0.4);
 		transition: all 100ms ease-in-out;
 		transform: scale(1.5);
+		height: 100%;
+		width: 100%;
 	}
-	.card:hover img.card-poster {
-		transform: skew(6deg, -11deg) rotate(5deg) scale(0.75);
-		box-shadow: 0 0 5px 0px var(--white), 0 0 10px 8px oklch(0 0 0 / 0.73);
-		transition: all 200ms ease-in-out;
-	}
-	.card:hover {
-		background-color: var(--primary);
-		transition: all 200ms ease-in-out;
-	}
-
-	.card:hover h3 {
-		color: var(--white);
+	.card:hover img.card-backdrop {
+		-webkit-filter: contrast(0.4) brightness(0.5) opacity(0.7);
+		transform: scale(1.65);
 		transition: all 200ms ease-in-out;
 	}
 
@@ -326,7 +462,7 @@
 		border: 3px solid #fff;
 		box-shadow: 0 0 5px #000;
 		/* transform: scale(0.75); */
-		transform-origin: 50% 50%;
+		transform-origin: 120% 0%;
 	}
 	/* styling for the debug pannel */
 
