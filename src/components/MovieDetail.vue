@@ -14,33 +14,33 @@
 	]);
 	let UIstate = ref('');
 	let movieID: number;
-	let results: Movie[] = reactive([]);
+	let results: Movie;
 	const APIstringDetailStart = `https://api.themoviedb.org/3/movie/`;
 	const APIstringDetailEnd = `?api_key=23c5356f958b1e94833e90b920184182`;
 
-	interface Movie {
+	type Movie = {
 		title: string;
 		poster_path: string;
 		id: number;
 		backdrop_path: string;
-		budget: null;
+		budget: number;
 		genres: [];
 		homepage: string;
 		imdb_id: string;
 		original_language: string;
 		original_title: string;
 		overview: string;
-		popularity: null;
+		popularity: number;
 		production_companies: [];
 		release_date: string;
-		revenue: null;
-		runtime: null;
+		revenue: number;
+		runtime: number;
 		status: string;
 		tagline: string;
 		video: false;
-		vote_average: null;
-		vote_count: null;
-	}
+		vote_average: number;
+		vote_count: number;
+	};
 
 	async function getDetails(this: any) {
 		queryLoading.value = true;
@@ -80,7 +80,10 @@
 
 <template>
 	<section>
-		<div v-if="UIstate == 'fetching' && results.length == 0" class="loading">
+		<div
+			v-if="UIstate == 'fetching' && results.id !== undefined"
+			class="loading"
+		>
 			<div class="lds-ripple">
 				<div></div>
 				<div></div>
@@ -116,10 +119,12 @@
 					tagline: <span class="detail">{{ results.tagline }}</span>
 				</li>
 				<li>
-					budget: <span class="detail">{{ styleMoney(results.budget) }}</span>
+					budget:
+					<span class="detail">{{ styleMoney(results.budget) }}</span>
 				</li>
 				<li v-if="results.status != 'Released'">
-					revenue: <span class="detail">{{ styleMoney(results.revenue) }}</span>
+					revenue:
+					<span class="detail">{{ styleMoney(results.revenue) }}</span>
 				</li>
 				<li>
 					homepage: <span class="detail">{{ results.homepage }}</span>
@@ -151,10 +156,12 @@
 					popularity: <span class="detail">{{ results.popularity }}</span>
 				</li>
 				<li>
-					release_date: <span class="detail">{{ results.release_date }}</span>
+					release_date:
+					<span class="detail">{{ results.release_date }}</span>
 				</li>
 				<li>
-					vote_average: <span class="detail">{{ results.vote_average }}</span>
+					vote_average:
+					<span class="detail">{{ results.vote_average }}</span>
 				</li>
 				<li>
 					vote_count: <span class="detail">{{ results.vote_count }}</span>
