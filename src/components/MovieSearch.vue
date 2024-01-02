@@ -1,7 +1,6 @@
 <script setup lang="ts">
 	import { reactive, ref } from 'vue';
 	import axios from 'axios';
-	import type { RouterLink } from 'vue-router';
 	let placeholder = ref('Type here to start searching...');
 	const suggestions = [
 		'Star Wars',
@@ -121,24 +120,18 @@
 				@keyup.enter="updateSearch"
 				@onblur="updateSearch"
 			/>
-			<button type="button" :onClick="search" :disabled="!querySearchterm">
-				🔎 Search
-			</button>
 
 			<button
 				type="reset"
 				:onClick="reset"
 				v-if="UIstate == 'fetched' && results.length > 0"
 			>
-				⏮️ Start over
+				Start over
 			</button>
 		</div>
 
 		<div v-if="UIstate == 'loaded'" class="suggestions">
 			How about:
-			<!-- <template v-for="(idea, index) in suggestions" :key="index">
-            <span :class="`idea-${index}`">{{ idea }}</span>
-        </template> -->
 			<span class="suggestion" :onClick="addSuggestion"
 				>"{{ suggestions[`${randomChosen}`] }}"</span
 			>
@@ -210,31 +203,6 @@
 			</div>
 		</div>
 	</section>
-	<!-- <div class="dump">
-    <div v-if="UIstate == 'loading'">⌛️ loading</div>
-    <div v-if="UIstate == 'loaded'">✅ loaded</div>
-    <div v-if="UIstate == 'fetching'">🚀 fetching</div>
-    <div v-if="UIstate == 'fetched'">🏁 fetched</div>
-    <div v-if="UIstate == 'failed'">❌ failed</div>
-    <button :onClick="triggerFetching">trigger fetching</button>
-    <button :onClick="reset">reset</button>
-    <details>
-      <summary>randomChosen</summary>
-      {{ randomChosen }}
-    </details>
-    <details>
-      <summary>queryLoading</summary>
-      {{ queryLoading }}
-    </details>
-    <details>
-      <summary>querySearchterm</summary>
-      {{ querySearchterm }}
-    </details>
-    <details>
-      <summary>Results</summary>
-      {{ results }}
-    </details>
-  </div> -->
 </template>
 
 <style scoped>
@@ -248,7 +216,6 @@
 		);
 	}
 	section > input:focus {
-		/* background: linear-gradient(45deg, var(--primary-20), var(--secondary-20)); */
 		background-image: radial-gradient(
 			farthest-corner ellipse at 1% 3% in oklch,
 			hsl(160 100% 37%) 22% 22%,
@@ -412,12 +379,12 @@
 		top: 0;
 		left: -50%;
 		object-fit: cover;
-		-webkit-filter: contrast(0.4) brightness(0.4);
+		filter: contrast(0.4) brightness(0.4);
 		transition: all 100ms ease-in-out;
 		transform: scale(1.5);
 	}
 	.card:hover img.card-backdrop {
-		-webkit-filter: contrast(0.4) brightness(0.5) opacity(0.7);
+		filter: contrast(0.4) brightness(0.5) opacity(0.7);
 		transform: scale(1.65);
 		transition: all 200ms ease-in-out;
 	}
@@ -426,7 +393,6 @@
 		float: right;
 		border: 3px solid #fff;
 		box-shadow: 0 0 5px #000;
-		/* margin: -2px 10px 10px 10px; */
 		transform: scale(0.75);
 		transform-origin: 120% 0%;
 	}

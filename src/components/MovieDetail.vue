@@ -51,7 +51,6 @@
 				.get(APIstringDetailStart + movieID + APIstringDetailEnd)
 				.then((res) => {
 					results = res.data;
-					console.table(results);
 
 					UIstate.value = loadingState[3];
 				})
@@ -223,7 +222,6 @@
 		display: block;
 		border: 3px solid #fff;
 		box-shadow: 0 0 5px #000;
-		/* margin: -2px 10px 10px 10px; */
 		position: relative;
 		z-index: 100;
 	}
@@ -235,27 +233,6 @@
 		}
 	}
 	section {
-		/* display: grid;
-	 grid-template-areas: "intro intro intro" "search search search" "sugestions sugestions sugestions" "result result result";
-	 grid-template-columns: 1fr;
-	 @media max-width(768px) {
-	   grid-template-areas: "intro" "search" "sugestions" "result";
-	 }
-	 grid-template-rows: auto auto 1fr; */
-		/* background: linear-gradient(
-	   45deg,
-	   var(--primary-20),
-	   var(--primary) 15%,
-	   var(--secondary),
-	   var(--secondary-20)
-	 ); */
-		/* background: radial-gradient(
-	   ellipse at top left,
-	   var(--primary),
-	   var(--secondary-20),
-	   transparent
-	 ); */
-		/* padding-block: 1rem; */
 		position: relative;
 		background-image: linear-gradient(
 			360deg in oklch,
@@ -446,14 +423,14 @@
 		position: absolute;
 		top: 0;
 		object-fit: cover;
-		-webkit-filter: contrast(0.4) brightness(0.4);
+		filter: contrast(0.4) brightness(0.4);
 		transition: all 100ms ease-in-out;
 		transform: scale(1.5);
 		height: 100%;
 		width: 100%;
 	}
 	.card:hover img.card-backdrop {
-		-webkit-filter: contrast(0.4) brightness(0.5) opacity(0.7);
+		filter: contrast(0.4) brightness(0.5) opacity(0.7);
 		transform: scale(1.65);
 		transition: all 200ms ease-in-out;
 	}

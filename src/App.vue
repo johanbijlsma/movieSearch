@@ -1,12 +1,20 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+	import MoviesTrending from './components/MoviesTrending.vue';
+	import MovieSearch from './components/MovieSearch.vue';
+</script>
 
 <template>
 	<header>
-		<router-link to="/"><h1>Johan's Movie search</h1></router-link>
+		<router-link :to="{ name: 'home' }"
+			><h1>Johan's Movie search</h1></router-link
+		>
 		<p class="subheading">Powered by the The MovieDB</p>
 	</header>
 	<main>
-		<router-view></router-view>
+		<template v-if="$route.name === 'home'"
+			><MovieSearch /> <MoviesTrending />
+		</template>
+		<template v-if="$route.name === 'detail'"><router-view /> ></template>
 	</main>
 </template>
 

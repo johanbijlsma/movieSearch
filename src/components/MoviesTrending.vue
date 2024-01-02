@@ -303,7 +303,7 @@
 		top: 0;
 		left: -50%;
 		object-fit: cover;
-		-webkit-filter: contrast(0.4) brightness(0.4);
+		filter: contrast(0.4) brightness(0.4);
 		transition: all 100ms ease-in-out;
 		transform: scale(1.5);
 	}
