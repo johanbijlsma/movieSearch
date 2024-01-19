@@ -2,6 +2,11 @@
 	import MovieDetail from './../components/MovieDetail.vue';
 </script>
 <template>
-	<router-link to="/"> Back to search </router-link>
-	<MovieDetail />
+	<div class="detail-view">
+		<p>This is the Detail View</p>
+
+		<router-link to="/"> Back to search </router-link>
+
+		<MovieDetail />
+	</div>
 </template>

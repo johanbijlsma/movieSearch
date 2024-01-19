@@ -34,7 +34,6 @@
 		let max = Math.floor(items);
 		let chosenItem = Math.floor(Math.random() * (max - min) + min);
 		if (chosenItem === randomChosen) {
-			console.log('randomly chose the same number');
 			chosenItem = Math.floor(Math.random() * (max - min) + min);
 		}
 		randomChosen = chosenItem;
@@ -44,7 +43,6 @@
 	function addSuggestion() {
 		searchBar.value = suggestions[`${randomChosen}`];
 		querySearchterm.value = searchBar.value;
-		console.log({ placeholder, searchBar });
 		randomlySuggest();
 	}
 
@@ -57,7 +55,6 @@
 				.get(APIstringMovie + querySearchterm.value)
 				.then((res) => {
 					results = res.data.results;
-					console.table(results);
 					UIstate.value = loadingState[3];
 				})
 				.catch((error: any) => ({ error, isLoading: false }));
@@ -75,9 +72,6 @@
 	}
 
 	function updateSearch() {
-		console.log('updateSearch ran');
-		console.log({ searchBar });
-
 		if (searchBar.value === '') {
 			querySearchterm.value = '';
 			queryLoading.value = false;
@@ -87,14 +81,11 @@
 		}
 	}
 	function reset() {
-		console.log('reset ran');
-		console.log({ searchBar });
 		searchBar.value = '';
 		querySearchterm.value = '';
 		queryLoading.value = false;
 		UIstate.value = loadingState[1];
 		results = [];
-		console.log({ querySearchterm, queryLoading, UIstate });
 	}
 	function triggerFetching() {
 		UIstate.value = loadingState[2];
@@ -104,7 +95,7 @@
 </script>
 
 <template>
-	<section>
+	<section class="search-wrapper">
 		<p class="intro">
 			To start using this site, please enter a search query to look for Movie
 			titles.
@@ -454,6 +445,9 @@
 		}
 	}
 
+	.search-wrapper {
+		border: dashed 3px hotpink;
+	}
 	@media (max-width: 900px) {
 		.card {
 			width: 100% !important;

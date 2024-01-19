@@ -1,20 +1,17 @@
-<script setup lang="ts">
-	import MoviesTrending from './components/MoviesTrending.vue';
-	import MovieSearch from './components/MovieSearch.vue';
-</script>
+<script setup lang="ts"></script>
 
 <template>
 	<header>
-		<router-link :to="{ name: 'home' }"
-			><h1>Johan's Movie search</h1></router-link
-		>
+		<router-link to="/"><h1>Johan's Movie search</h1></router-link>
 		<p class="subheading">Powered by the The MovieDB</p>
+		{{ $route.path }} - {{ $route.name }}
 	</header>
 	<main>
-		<template v-if="$route.name === 'home'"
-			><MovieSearch /> <MoviesTrending />
-		</template>
-		<template v-if="$route.name === 'detail'"><router-view /> ></template>
+		<router-view v-slot="{ Component }">
+			<transition name="fade" mode="out-in">
+				<Component :is="Component" />
+			</transition>
+		</router-view>
 	</main>
 </template>
 
@@ -27,7 +24,14 @@
 		display: block;
 		margin: 0 auto 2rem;
 	}
-
+	.fade-enter-active,
+	.fade-leave-active {
+		transition: opacity 0.5s ease-out;
+	}
+	.fade-enter-from,
+	.fade-leave-to {
+		opacity: 0;
+	}
 	@media (min-width: 1024px) {
 		header {
 			display: flex;

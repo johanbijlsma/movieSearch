@@ -63,9 +63,7 @@
 	}
 
 	function getMovieID() {
-		console.log(useRoute().params.id);
 		movieID = toNumber(useRoute().params.id);
-		console.log({ movieID });
 	}
 	function styleMoney(a: number) {
 		return a.toLocaleString('en-US', {
@@ -78,7 +76,14 @@
 </script>
 
 <template>
-	<section>
+	<section class="detail-wrapper">
+		<div class="debug">
+			<p>THIS IS IN THE MovieDetail.vue!!!</p>
+			<details>
+				<summary>Route info</summary>
+				<pre>{{ $router }}</pre>
+			</details>
+		</div>
 		<div
 			v-if="UIstate == 'fetching' && results.id !== undefined"
 			class="loading"
@@ -467,6 +472,18 @@
 	}
 	.lds-ripple div:nth-child(2) {
 		animation-delay: -0.5s;
+	}
+
+	.detail-wrapper {
+		width: 100%;
+		min-height: 80vh;
+		border: dashed 3px lime;
+		& .debug {
+			color: var(--white);
+			padding-inline: 0.5rem;
+			text-shadow: 0 0 3px var(--alert);
+			font-weight: 800;
+		}
 	}
 	@keyframes lds-ripple {
 		0% {

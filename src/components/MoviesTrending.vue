@@ -23,7 +23,6 @@
 			.get(APIstringTrending)
 			.then((res) => {
 				results = res.data.results;
-				console.table(results);
 
 				UIstate.value = loadingState[3];
 				trendNumber = 1;
@@ -73,21 +72,6 @@
 								{{ trendNumber++ }}
 							</h3>
 						</div>
-						<!-- <img
-          v-if="backdrop_path != null"
-          :src="`https://image.tmdb.org/t/p/w1400_and_h450_face${backdrop_path}`"
-          :alt="title"
-          class="card-backdrop"
-        /> -->
-						<!-- <img
-          v-if="backdrop_path == null"
-          src="./../assets/fallback-background.jpg"
-          alt=""
-          class="card-backdrop fallback"
-        /> -->
-						<!-- <p> -->
-						<!-- {{ overview }} -->
-						<!-- </p> -->
 					</router-link>
 				</div>
 			</div>
@@ -103,26 +87,6 @@
 
 <style scoped>
 	section {
-		/* display: grid;
-  grid-template-areas: "intro intro intro" "search search search" "sugestions sugestions sugestions" "result result result";
-  grid-template-columns: 1fr;
-  @media max-width(768px) {
-    grid-template-areas: "intro" "search" "sugestions" "result";
-  }
-  grid-template-rows: auto auto 1fr; */
-		/* background: linear-gradient(
-    45deg,
-    var(--primary-20),
-    var(--primary) 15%,
-    var(--secondary),
-    var(--secondary-20)
-  ); */
-		/* background: radial-gradient(
-    ellipse at top left,
-    var(--primary),
-    var(--secondary-20),
-    transparent
-  ); */
 		padding-block: 1rem;
 
 		background-image: linear-gradient(
